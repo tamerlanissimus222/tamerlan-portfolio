@@ -1,0 +1,26 @@
+---
+import { withBase } from '@/lib/paths';
+
+interface Props {
+  videoId: string;
+  title: string;
+  thumbnail?: { src: string; alt: string; caption?: string };
+  index?: number;
+}
+
+const { videoId, title, thumbnail: localThumbnail, index = 1 } = Astro.props;
+const src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+const thumbnail = localThumbnail ? withBase(localThumbnail.src) : `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+---
+
+<article class="video-embed" data-lazy-embed data-kind="video" data-src={src}>
+  <img src={thumbnail} alt={localThumbnail?.alt ?? ''} width="960" height="600" loading="lazy" referrerpolicy="no-referrer" />
+  <div class="video-embed__content">
+    <p class="media-type"><span>▶</span> Video · {String(index).padStart(2, '0')}</p>
+    <h4>{title}</h4>
+    <button class="load-embed" type="button" data-load-embed>Play video <span aria-hidden="true">▶</span></button>
+  </div>
+  <div class="embed-frame" hidden>
+    <div class="embed-status" role="status" aria-live="polite">Loading video…</div>
+  </div>
+</article>

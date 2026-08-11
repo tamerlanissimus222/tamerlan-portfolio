@@ -1,0 +1,36 @@
+---
+const steps = [
+  ['01', '3D scan', 'Capture patient geometry'],
+  ['02', 'Process', 'Clean and align scan data'],
+  ['03', 'Correct', 'Apply digital correction'],
+  ['04', 'Engineer', 'Build functional geometry'],
+  ['05', 'Print', 'Select material and orientation'],
+  ['06', 'Finish', 'Post-process interfaces'],
+  ['07', 'Assemble', 'Integrate components'],
+  ['08', 'Fit', 'Evaluate comfort and motion'],
+  ['09', 'Iterate', 'Feed evidence forward'],
+];
+---
+
+<section class="workflow section-shell" id="workflow" aria-labelledby="workflow-title" data-workflow>
+  <header class="workflow__header" data-reveal>
+    <div>
+      <p class="eyebrow">02 · Digital workflow</p>
+      <h2 id="workflow-title">One continuous<br />engineering loop.</h2>
+    </div>
+    <p>The progression animation follows the work: evidence moves from patient geometry to a fitted system, then returns as the input for the next iteration.</p>
+  </header>
+  <ol class="workflow__steps">
+    {steps.map(([index, title, detail], i) => (
+      <li style={`--step-index: ${i}`}>
+        <span>{index}</span>
+        <div class="workflow__node" aria-hidden="true"><i></i></div>
+        <h3>{title}</h3>
+        <p>{detail}</p>
+      </li>
+    ))}
+  </ol>
+  <div class="workflow__legend" aria-hidden="true">
+    <span>Patient data</span><i></i><span>Digital system</span><i></i><span>Physical evidence</span>
+  </div>
+</section>

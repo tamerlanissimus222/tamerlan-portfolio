@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TagList from './TagList.astro';
+import { withBase } from '@/lib/paths';
+
+interface Props {
+  entry: CollectionEntry<'other-work'>;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+---
+
+<article class="project-card" data-reveal>
+  <div class="project-card__visual">
+    {data.image ? (
+      <img src={withBase(data.image.src)} alt={data.image.alt} width="800" height="600" loading="lazy" decoding="async" />
+    ) : (
+      <div class="project-card__schematic" aria-hidden="true">
+        <i></i><i></i><i></i><span>{String(data.order).padStart(2, '0')}</span>
+      </div>
+    )}
+    {data.placeholder && <span class="placeholder-chip">Media + copy placeholder</span>}
+  </div>
+  <div class="project-card__body">
+    <p class="eyebrow">{data.category}</p>
+    <h3>{data.title}</h3>
+    <p>{data.summary}</p>
+    <TagList tags={data.tags} label={`${data.title} tags`} />
+    {data.model && <a href={data.model.url} target="_blank" rel="noreferrer">Open 3D model ↗</a>}
+  </div>
+</article>

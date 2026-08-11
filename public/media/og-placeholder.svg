@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#101714"/>
+  <path d="M0 510 1200 240v390H0z" fill="#16211c"/>
+  <circle cx="1025" cy="110" r="260" fill="#b8f34a" opacity=".12"/>
+  <text x="80" y="250" fill="#edf3ef" font-family="Arial, sans-serif" font-size="84" font-weight="700">Tamerlan Khunaev</text>
+  <text x="84" y="330" fill="#b8f34a" font-family="Arial, sans-serif" font-size="36">Digital Prosthetics · R&amp;D Engineering</text>
+  <text x="84" y="515" fill="#91a198" font-family="Arial, sans-serif" font-size="22">PORTFOLIO PREVIEW — REPLACE BEFORE PUBLISHING</text>
+</svg>

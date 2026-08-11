@@ -1,0 +1,12 @@
+---
+interface Props {
+  class?: string;
+  label?: string;
+}
+
+const { class: className = '', label = 'Project media' } = Astro.props;
+---
+
+<div class:list={['media-grid', className]} aria-label={label}>
+  <slot />
+</div>

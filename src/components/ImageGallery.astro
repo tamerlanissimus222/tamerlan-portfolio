@@ -1,0 +1,44 @@
+---
+import { withBase } from '@/lib/paths';
+
+interface ImageItem {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  images: ImageItem[];
+  label: string;
+  compact?: boolean;
+}
+
+const { images, label, compact = false } = Astro.props;
+const galleryId = `gallery-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class:list={['image-gallery', { 'image-gallery--compact': compact }]} data-gallery id={galleryId}>
+  <div class="image-gallery__grid" role="list" aria-label={label}>
+    {images.map((image, index) => (
+      <button
+        type="button"
+        class="image-gallery__item"
+        data-gallery-item
+        data-full={withBase(image.src)}
+        data-alt={image.alt}
+        data-caption={image.caption ?? ''}
+        aria-label={`Open image ${index + 1} of ${images.length}: ${image.caption ?? image.alt}`}
+        role="listitem"
+      >
+        <img src={withBase(image.src)} alt={image.alt} width="900" height="700" loading="lazy" decoding="async" />
+        {image.caption && <span>{image.caption}</span>}
+        <i aria-hidden="true">↗</i>
+      </button>
+    ))}
+  </div>
+  <dialog class="lightbox" aria-label={`${label} image viewer`}>
+    <button class="lightbox__close" type="button" data-lightbox-close aria-label="Close image viewer">×</button>
+    <img alt="" />
+    <p></p>
+  </dialog>
+</div>

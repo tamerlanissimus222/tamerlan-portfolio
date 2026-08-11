@@ -1,0 +1,35 @@
+---
+import { withBase } from '@/lib/paths';
+
+interface Props {
+  label: string;
+  url: string;
+  description?: string;
+  thumbnail?: { src: string; alt: string; caption?: string };
+  index?: number;
+}
+
+const { label, url, description, thumbnail, index = 1 } = Astro.props;
+---
+
+<article class="model-viewer" data-lazy-embed data-kind="3D model" data-src={url}>
+  <div class="model-viewer__placeholder">
+    {thumbnail ? (
+      <img src={withBase(thumbnail.src)} alt={thumbnail.alt} width="900" height="700" loading="lazy" decoding="async" />
+    ) : (
+      <div class="model-glyph" aria-hidden="true"><i></i><i></i><i></i></div>
+    )}
+    <div class="model-viewer__content">
+      <p class="media-type"><span>3D</span> Interactive model · {String(index).padStart(2, '0')}</p>
+      <h4>{label}</h4>
+      {description && <p>{description}</p>}
+      <button class="load-embed" type="button" data-load-embed>
+        Open 3D viewer <span aria-hidden="true">↗</span>
+      </button>
+    </div>
+  </div>
+  <div class="embed-frame" hidden>
+    <div class="embed-status" role="status" aria-live="polite">Loading external 3D viewer…</div>
+  </div>
+  <noscript><a href={url} target="_blank" rel="noreferrer">Open {label} in a new tab</a></noscript>
+</article>

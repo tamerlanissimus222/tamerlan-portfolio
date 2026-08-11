@@ -1,0 +1,64 @@
+---
+import { profile } from '@/data/profile';
+import { withBase } from '@/lib/paths';
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <img
+    class="hero__visual"
+    src={withBase('media/hero-hand-original.png')}
+    alt="Digital engineering render of a prosthetic hand."
+    width="1883"
+    height="825"
+    fetchpriority="high"
+    decoding="async"
+  />
+
+  <div class="hero__grid">
+    <div class="hero__identity" data-reveal>
+      <p class="eyebrow hero__kicker"><span class="status-dot"></span>{profile.heroEyebrow}</p>
+      <div class="hero__identity-lockup">
+        <figure class="hero__person">
+          <img
+            src={withBase(profile.portrait.src)}
+            alt={profile.portrait.alt}
+            width="240"
+            height="240"
+            decoding="async"
+          />
+        </figure>
+        <h1 id="hero-title" aria-label={profile.name}><span>Tamerlan</span>{' '}<span>Khunaev</span></h1>
+      </div>
+      <p class="hero__role">{profile.role}</p>
+      <p class="hero__availability">{profile.heroAvailability}</p>
+
+      <div class="hero__cta">
+        <a class="button button--primary" href="#cases">Explore the work <span aria-hidden="true">↓</span></a>
+        <a class="button button--ghost" href={`mailto:${profile.email}`}>Contact <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+
+    <div class="hero__expertise" data-reveal>
+      <span class="hero__expertise-label">CORE EXPERTISE</span>
+      <div class="expertise-desktop">
+        {profile.expertiseGroups.map((group) => (
+          <div class="expertise-group">
+            <h2>{group.title}</h2>
+            <ul>{group.items.map((item) => <li>{item}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+      <details class="expertise-mobile">
+        <summary>View disciplines <span>{profile.expertiseGroups.length} groups</span></summary>
+        <div>
+          {profile.expertiseGroups.map((group) => (
+            <section>
+              <h2>{group.title}</h2>
+              <ul>{group.items.map((item) => <li>{item}</li>)}</ul>
+            </section>
+          ))}
+        </div>
+      </details>
+    </div>
+  </div>
+</section>

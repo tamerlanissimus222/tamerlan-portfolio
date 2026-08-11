@@ -1,0 +1,71 @@
+:root {
+  /* Colour */
+  --color-ink: #101714;
+  --color-ink-soft: #1b2520;
+  --color-paper: #edf2ef;
+  --color-paper-strong: #ffffff;
+  --color-panel: #dfe7e2;
+  --color-line: #bac6bf;
+  --color-line-dark: #35423b;
+  --color-muted: #66746c;
+  --color-muted-dark: #9aa9a0;
+  --color-accent: #b8f34a;
+  --color-accent-strong: #91cd20;
+  --color-warning: #f2c66d;
+  --color-focus: #73b8ff;
+  --color-error: #ff8e84;
+
+  /* Typography */
+  --font-display: "Arial Narrow", "Aptos Display", "Roboto Condensed", Arial, sans-serif;
+  --font-body: "Aptos", "Inter", "Segoe UI", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  --text-xs: clamp(0.78rem, 0.75rem + 0.1vw, 0.84rem);
+  --text-sm: clamp(0.9rem, 0.86rem + 0.12vw, 0.98rem);
+  --text-base: clamp(1rem, 0.96rem + 0.16vw, 1.1rem);
+  --text-lg: clamp(1.14rem, 1.03rem + 0.38vw, 1.42rem);
+  --text-xl: clamp(1.55rem, 1.25rem + 1.2vw, 2.5rem);
+  --text-2xl: clamp(2.3rem, 1.55rem + 3vw, 5.4rem);
+  --text-hero: clamp(3.25rem, 1.9rem + 5.4vw, 8.6rem);
+  --leading-tight: 0.88;
+  --leading-heading: 0.98;
+  --leading-body: 1.58;
+
+  /* Space */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+  --section-space: clamp(4.5rem, 7vw, 7rem);
+  --gutter: clamp(1rem, 3.4vw, 4.5rem);
+  --container: 100rem;
+
+  /* Surfaces */
+  --border-thin: 1px;
+  --border-heavy: 2px;
+  --radius-sm: 0.35rem;
+  --radius-md: 0.8rem;
+  --radius-lg: 1.4rem;
+  --radius-pill: 999px;
+  --shadow-soft: 0 20px 60px rgb(7 12 9 / 0.12);
+  --shadow-raised: 0 28px 80px rgb(7 12 9 / 0.22);
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 160ms;
+  --duration-base: 360ms;
+  --duration-slow: 760ms;
+  --workflow-speed: 5.8s;
+
+  /* Breakpoint reference tokens. Media queries below mirror these values. */
+  --breakpoint-sm: 30rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 72rem;
+  --breakpoint-xl: 96rem;
+}

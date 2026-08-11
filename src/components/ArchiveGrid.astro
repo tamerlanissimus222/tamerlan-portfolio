@@ -1,0 +1,17 @@
+---
+const items = [
+  { title: 'Experiment slot', category: 'CAD' },
+  { title: 'Experiment slot', category: 'FDM' },
+  { title: 'Experiment slot', category: 'Prototype' },
+];
+---
+
+<div class="archive-grid archive-grid--empty" aria-label="Experimental archive placeholders">
+  {items.map((item, index) => (
+    <article data-category={item.category.toLowerCase()} data-reveal>
+      <span>{String(index + 1).padStart(2, '0')} / {item.category}</span>
+      <h3>{item.title}</h3>
+      <p>Add one verified experiment and its own media.</p>
+    </article>
+  ))}
+</div>

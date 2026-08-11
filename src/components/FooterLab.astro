@@ -1,0 +1,33 @@
+---
+import { profile } from '@/data/profile';
+---
+
+<footer class="site-footer" id="contact">
+  <div class="site-footer__main">
+    <div>
+      <p class="eyebrow">Contact / next step</p>
+      <h2>Let’s improve the fit<br />between people and technology.</h2>
+    </div>
+    <div class="site-footer__contact">
+      <a href={`mailto:${profile.email}`}>{profile.email} <span>placeholder</span></a>
+      <p>{profile.availability}</p>
+    </div>
+  </div>
+
+  <details class="lab-drawer">
+    <summary>You reached the distal end. <span>Still curious? Open the lab ↗</span></summary>
+    <div class="lab-drawer__content">
+      <header>
+        <p class="eyebrow">Experimental archive · unpolished by design</p>
+        <h3>Bench notes, print trials and geometry studies.</h3>
+      </header>
+      <p class="lab-drawer__empty">This drawer is ready for miscellaneous experiments. Case-study images are deliberately not duplicated here.</p>
+    </div>
+  </details>
+
+  <div class="site-footer__legal">
+    <span>© {new Date().getFullYear()} {profile.name}</span>
+    <span>Patient information anonymised</span>
+    <a href="#top">Back to top ↑</a>
+  </div>
+</footer>

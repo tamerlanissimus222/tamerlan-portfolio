@@ -1,0 +1,22 @@
+---
+import { navigation, profile } from '@/data/profile';
+import { withBase } from '@/lib/paths';
+---
+
+<header class="site-header" aria-label="Primary navigation">
+  <a class="wordmark" href="#top" aria-label="Tamerlan Khunaev, back to top">
+    <span>{profile.initials}</span>
+    <small>Prosthetics<br />Engineering</small>
+  </a>
+  <nav>
+    <ul>
+      {navigation.map((item) => (
+        <li><a href={item.href}><span class="nav-short">{item.label}</span><span class="nav-long">{item.longLabel}</span></a></li>
+      ))}
+    </ul>
+  </nav>
+  <div class="site-header__actions">
+    <a href={`mailto:${profile.email}`}>Contact</a>
+    <a class="header-cv" href={withBase(profile.cvPath)} download>{profile.cvLabel}</a>
+  </div>
+</header>

@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+import About from '@/components/About.astro';
+import ArchiveGrid from '@/components/ArchiveGrid.astro';
+import CaseStudy from '@/components/CaseStudy.astro';
+import FooterLab from '@/components/FooterLab.astro';
+import Hero from '@/components/Hero.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import ResearchProject from '@/components/ResearchProject.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import Workflow from '@/components/Workflow.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const cases = (await getCollection('cases')).sort((a, b) => a.data.order - b.data.order);
+const research = (await getCollection('research')).sort((a, b) => a.data.order - b.data.order);
+const otherWork = (await getCollection('other-work')).sort((a, b) => a.data.order - b.data.order);
+
+---
+
+<BaseLayout
+  title="Tamerlan Khunaev — Digital Prosthetics & R&D Engineer"
+  description="Portfolio of Tamerlan Khunaev: digital prosthetics, scan-to-CAD workflows, upper-limb socket development, additive manufacturing and R&D."
+>
+  <Hero />
+  <main id="main-content">
+    <About />
+
+    <section class="cases section-shell" id="cases" aria-labelledby="cases-title">
+      <SectionHeader
+        index="03"
+        eyebrow="Selected prosthetic cases"
+        title="The work, not just the outcome."
+        intro="Anonymised case studies organised around the decisions between scan, geometry, print and fit."
+      />
+      <div class="case-list">
+        {cases.map((entry) => <CaseStudy entry={entry} />)}
+      </div>
+      <section class="additional-cases" aria-labelledby="additional-cases-title" data-reveal>
+        <header>
+          <p class="eyebrow">Additional cases</p>
+          <h3 id="additional-cases-title">Reserved for verified work.</h3>
+          <p>The images previously shown here belong to Case 03 and have been returned to that case. Add new case media here only after its source is confirmed.</p>
+        </header>
+        <div class="verified-media-note" role="note">No unrelated media is used as a placeholder.</div>
+      </section>
+    </section>
+
+    <Workflow />
+
+    <section class="research section-shell" id="research" aria-labelledby="research-title">
+      <SectionHeader
+        index="04"
+        eyebrow="R&D / experiments"
+        title="Questions turned into physical evidence."
+        intro="Featured work follows a disciplined Problem → Hypothesis → Development → Result structure."
+      />
+      <div class="research-list">
+        {research.map((entry) => <ResearchProject entry={entry} />)}
+      </div>
+      <section class="archive" aria-labelledby="archive-title">
+        <header data-reveal>
+          <div>
+            <p class="eyebrow">Experimental archive</p>
+            <h3 id="archive-title">Small trials. Useful signals.</h3>
+          </div>
+          <p data-filter-ready>Structured with category data for future filters.</p>
+        </header>
+        <ArchiveGrid />
+      </section>
+    </section>
+
+    <section class="other-work section-shell" id="other-work" aria-labelledby="other-work-title">
+      <SectionHeader
+        index="05"
+        eyebrow="Other work"
+        title="Engineering range beyond prosthetics."
+        intro="The source portfolio contained no verified non-prosthetic project media, so these cards are intentionally publication-ready placeholders."
+      />
+      <div class="project-grid">
+        {otherWork.map((entry) => <ProjectCard entry={entry} />)}
+      </div>
+    </section>
+  </main>
+  <FooterLab />
+</BaseLayout>

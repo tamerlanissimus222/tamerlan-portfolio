@@ -1,0 +1,135 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ImageGallery from './ImageGallery.astro';
+import Model3DViewer from './Model3DViewer.astro';
+import TagList from './TagList.astro';
+import VideoEmbed from './VideoEmbed.astro';
+import { withBase } from '@/lib/paths';
+
+interface Props {
+  entry: CollectionEntry<'cases'>;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const caseNumber = String(data.order).padStart(2, '0');
+const caseId = `case-${caseNumber}`;
+---
+
+<article class="case-study" id={caseId} data-reveal>
+  <header class="case-study__header">
+    <div>
+      <p class="eyebrow">{data.eyebrow}</p>
+      <h3>{data.title}</h3>
+    </div>
+    <span class="case-study__index" aria-hidden="true">C/{caseNumber}</span>
+  </header>
+
+  <nav class="case-study__local-nav" aria-label={`${data.title} contents`}>
+    <a href={`#${caseId}-overview`}>Overview</a>
+    <a href={`#${caseId}-process`}>Process</a>
+    <a href={`#${caseId}-photos`}>Photos</a>
+    {data.videos.length > 0 && <a href={`#${caseId}-videos`}>Video</a>}
+    {data.models.length > 0 && <a href={`#${caseId}-models`}>3D</a>}
+  </nav>
+
+  {data.placeholder && (
+    <p class="placeholder-notice" role="note">
+      <strong>Draft narrative:</strong> media and links are verified; marked case notes still need confirmation.
+    </p>
+  )}
+
+  <section class="case-study__overview" id={`${caseId}-overview`}>
+    <div class="case-study__context">
+      <p class="data-label">01 / Context</p>
+      <p>{data.context}</p>
+      <TagList tags={data.tags} />
+    </div>
+    <figure class="case-study__featured">
+      <img
+        src={withBase(data.featuredImage.src)}
+        alt={data.featuredImage.alt}
+        width="1200"
+        height="900"
+        loading={data.order === 1 ? 'eager' : 'lazy'}
+        decoding="async"
+      />
+      {data.featuredImage.caption && <figcaption>{data.featuredImage.caption}</figcaption>}
+    </figure>
+  </section>
+
+  <section class="case-path" id={`${caseId}-process`} aria-labelledby={`${caseId}-process-title`}>
+    <header>
+      <p class="data-label">02 / Engineering path</p>
+      <h4 id={`${caseId}-process-title`}>From constraint to outcome</h4>
+    </header>
+    <ol>
+      <li>
+        <span>01</span>
+        <div><h5>Challenge</h5><p>{data.challenge}</p></div>
+      </li>
+      <li>
+        <span>02</span>
+        <div><h5>Reasoning</h5><p>{data.reasoning}</p></div>
+      </li>
+      <li>
+        <span>03</span>
+        <div>
+          <h5>Iterations</h5>
+          <ul>
+            {data.iterations.map((iteration) => (
+              <li><strong>{iteration.label}</strong><p>{iteration.summary}</p></li>
+            ))}
+          </ul>
+        </div>
+      </li>
+      <li class="case-path__result">
+        <span>04</span>
+        <div><h5>Result</h5><p>{data.result}</p></div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="case-media" id={`${caseId}-photos`} aria-labelledby={`${caseId}-photos-title`}>
+    <header class="case-media__header">
+      <div>
+        <p class="data-label">03 / Physical evidence</p>
+        <h4 id={`${caseId}-photos-title`}>Photos</h4>
+      </div>
+      <p>Assessment, manufacturing and the physical result. CAD and previews are kept out of this gallery.</p>
+    </header>
+    <ImageGallery images={data.gallery} label={`${data.title} photographs`} compact />
+  </section>
+
+  {data.videos.length > 0 && (
+    <section class="case-media" id={`${caseId}-videos`} aria-labelledby={`${caseId}-videos-title`}>
+      <header class="case-media__header">
+        <div>
+          <p class="data-label">04 / Motion evidence</p>
+          <h4 id={`${caseId}-videos-title`}>Video</h4>
+        </div>
+        <p>Each card is a video. It loads only after you press play.</p>
+      </header>
+      <div class="video-grid">
+        {data.videos.map((video, index) => (
+          <VideoEmbed videoId={video.id} title={video.title} thumbnail={video.thumbnail} index={index + 1} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {data.models.length > 0 && (
+    <section class="case-media" id={`${caseId}-models`} aria-labelledby={`${caseId}-models-title`}>
+      <header class="case-media__header">
+        <div>
+          <p class="data-label">05 / Interactive geometry</p>
+          <h4 id={`${caseId}-models-title`}>3D models</h4>
+        </div>
+        <p>Each preview opens an interactive external 3D viewer on request.</p>
+      </header>
+      <div class="model-grid">
+        {data.models.map((model, index) => <Model3DViewer {...model} index={index + 1} />)}
+      </div>
+    </section>
+  )}
+</article>

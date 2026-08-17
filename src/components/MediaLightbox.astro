@@ -1,0 +1,29 @@
+<dialog class="case-media-dialog" data-case-media-dialog data-media-type="image" aria-label="Case media viewer">
+  <div class="case-media-dialog__shell">
+    <header>
+      <div>
+        <p class="case-technical-label" data-dialog-kind>MEDIA</p>
+        <h3 data-dialog-caption>Case evidence</h3>
+      </div>
+      <button type="button" data-case-dialog-close aria-label="Close media viewer">×</button>
+    </header>
+    <div class="case-media-dialog__viewer">
+      <img data-dialog-image alt="" hidden />
+      <iframe
+        data-dialog-frame
+        title="Case interactive media"
+        allow="fullscreen; autoplay; xr-spatial-tracking"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin"
+        hidden
+      ></iframe>
+      <video data-dialog-video controls playsinline hidden></video>
+      <p class="case-media-dialog__status" data-dialog-status role="status" aria-live="polite" hidden>Loading media…</p>
+      <button class="case-media-dialog__navigation case-media-dialog__navigation--previous" type="button" data-dialog-previous aria-label="Previous image" hidden>←</button>
+      <button class="case-media-dialog__navigation case-media-dialog__navigation--next" type="button" data-dialog-next aria-label="Next image" hidden>→</button>
+      <span class="case-media-dialog__counter" data-dialog-counter aria-live="polite" hidden></span>
+    </div>
+    <p class="case-media-dialog__description" data-dialog-description></p>
+    <a class="case-media-dialog__external" data-dialog-external target="_blank" rel="noreferrer" hidden>Open source in a new tab ↗</a>
+  </div>
+</dialog>

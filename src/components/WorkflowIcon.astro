@@ -1,0 +1,54 @@
+---
+import type { WorkflowIconName } from '@/lib/case-types';
+
+interface Props {
+  name: WorkflowIconName;
+}
+
+const { name } = Astro.props;
+---
+
+<span class="workflow-icon" aria-hidden="true">
+  {name === 'scan' && (
+    <svg viewBox="0 0 24 24" role="img">
+      <path d="M5 8V5h3M16 5h3v3M19 16v3h-3M8 19H5v-3" />
+      <path d="M8.5 9.5 12 7l3.5 2.5v5L12 17l-3.5-2.5zM8.5 9.5 12 12l3.5-2.5M12 12v5" />
+    </svg>
+  )}
+  {name === 'cad' && (
+    <svg viewBox="0 0 24 24" role="img">
+      <path d="m12 3 7 4v10l-7 4-7-4V7zM5 7l7 4 7-4M12 11v10" />
+      <path d="m9 5 7 4v5" />
+    </svg>
+  )}
+  {name === 'printer' && (
+    <svg viewBox="0 0 24 24" role="img">
+      <path d="M5 3h14v5H5zM7 8v4h10V8M6 21h12M8 17h8v4H8z" />
+      <path d="M12 12v3M10 15h4" />
+    </svg>
+  )}
+  {name === 'fit' && (
+    <svg viewBox="0 0 24 24" role="img">
+      <path d="M7 4h7l3 3v5l-3 3H9l-2-3zM14 4v4h3" />
+      <path d="m9 18 2 2 5-5" />
+    </svg>
+  )}
+  {name === 'measure' && (
+    <svg viewBox="0 0 24 24" role="img">
+      <path d="M4 17 17 4l3 3L7 20z" />
+      <path d="m13 8 3 3M10 11l2 2M7 14l3 3" />
+    </svg>
+  )}
+  {name === 'assembly' && (
+    <svg viewBox="0 0 24 24" role="img">
+      <path d="m9 4 3 3-5 5-3-3zM15 12l5 5-3 3-5-5z" />
+      <path d="m12 7 5-3 3 3-3 5M7 12l-3 5 3 3 5-3" />
+    </svg>
+  )}
+  {name === 'test' && (
+    <svg viewBox="0 0 24 24" role="img">
+      <path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3" />
+      <path d="M8 15h8M9 18h6" />
+    </svg>
+  )}
+</span>

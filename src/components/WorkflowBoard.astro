@@ -1,0 +1,24 @@
+---
+import type { WorkflowStageData } from '@/lib/case-types';
+import WorkflowPath from './WorkflowPath.astro';
+import WorkflowStage from './WorkflowStage.astro';
+
+interface Props {
+  caseId: string;
+  stages: WorkflowStageData[];
+  validationStatus: string;
+}
+
+const { caseId, stages, validationStatus } = Astro.props;
+---
+
+<section class="workflow-board" id={`${caseId}-workflow`} aria-label="Digital workflow media evidence" data-case-workflow>
+  <div class="workflow-board__route" style={`--stage-count: ${stages.length}`}>
+    <WorkflowPath stageCount={stages.length} />
+    <ol class="workflow-board__stages">
+      {stages.map((stage, index) => (
+        <WorkflowStage caseId={caseId} stage={stage} index={index} validationStatus={validationStatus} />
+      ))}
+    </ol>
+  </div>
+</section>

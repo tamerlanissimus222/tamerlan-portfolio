@@ -3,8 +3,10 @@ import { getCollection } from 'astro:content';
 import About from '@/components/About.astro';
 import ArchiveGrid from '@/components/ArchiveGrid.astro';
 import CaseStudy from '@/components/CaseStudy.astro';
+import CaseNavigation from '@/components/CaseNavigation.astro';
 import FooterLab from '@/components/FooterLab.astro';
 import Hero from '@/components/Hero.astro';
+import MediaLightbox from '@/components/MediaLightbox.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import ResearchProject from '@/components/ResearchProject.astro';
 import SectionHeader from '@/components/SectionHeader.astro';
@@ -25,24 +27,18 @@ const otherWork = (await getCollection('other-work')).sort((a, b) => a.data.orde
   <main id="main-content">
     <About />
 
-    <section class="cases section-shell" id="cases" aria-labelledby="cases-title">
-      <SectionHeader
-        index="03"
-        eyebrow="Selected prosthetic cases"
-        title="The work, not just the outcome."
-        intro="Anonymised case studies organised around the decisions between scan, geometry, print and fit."
-      />
-      <div class="case-list">
-        {cases.map((entry) => <CaseStudy entry={entry} />)}
+    <section class="cases" id="cases" aria-labelledby="cases-title" data-case-section>
+      <span class="section-scroll-anchor" data-section-anchor aria-hidden="true"></span>
+      <header class="case-section__header">
+        <div class="case-section__heading">
+          <p class="case-technical-label" id="cases-title">03 / SELECTED PROSTHETIC CASES</p>
+        </div>
+        <CaseNavigation cases={cases} />
+      </header>
+      <div class="case-list" data-case-list>
+        {cases.map((entry, index) => <CaseStudy entry={entry} active={index === 0} />)}
       </div>
-      <section class="additional-cases" aria-labelledby="additional-cases-title" data-reveal>
-        <header>
-          <p class="eyebrow">Additional cases</p>
-          <h3 id="additional-cases-title">Reserved for verified work.</h3>
-          <p>The images previously shown here belong to Case 03 and have been returned to that case. Add new case media here only after its source is confirmed.</p>
-        </header>
-        <div class="verified-media-note" role="note">No unrelated media is used as a placeholder.</div>
-      </section>
+      <MediaLightbox />
     </section>
 
     <Workflow />
@@ -82,4 +78,7 @@ const otherWork = (await getCollection('other-work')).sort((a, b) => a.data.orde
     </section>
   </main>
   <FooterLab />
+  <script>
+    import '../scripts/cases.ts';
+  </script>
 </BaseLayout>

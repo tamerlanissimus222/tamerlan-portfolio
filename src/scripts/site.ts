@@ -13,19 +13,73 @@ const navSections = primaryNavLinks
   .map((link) => document.querySelector<HTMLElement>(link.hash))
   .filter((section): section is HTMLElement => Boolean(section));
 
-if ('IntersectionObserver' in window) {
-  const activeNavObserver = new IntersectionObserver((entries) => {
-    const visible = entries
-      .filter((entry) => entry.isIntersecting)
-      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (!visible) return;
-    primaryNavLinks.forEach((link) => {
-      if (link.hash === `#${visible.target.id}`) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
-    });
-  }, { rootMargin: '-20% 0px -65% 0px', threshold: [0, 0.15, 0.5] });
-  navSections.forEach((section) => activeNavObserver.observe(section));
-}
+const getAnchorOffset = () => {
+  const rootStyles = window.getComputedStyle(document.documentElement);
+  const rem = Number.parseFloat(rootStyles.fontSize) || 16;
+  const configuredOffset = Number.parseFloat(rootStyles.getPropertyValue('--site-header-anchor-height'));
+  return Number.isFinite(configuredOffset) ? configuredOffset * rem : (siteHeader?.getBoundingClientRect().height ?? 0);
+};
+
+const setActiveNav = (hash?: string) => {
+  primaryNavLinks.forEach((link) => {
+    if (hash && link.hash === hash) link.setAttribute('aria-current', 'true');
+    else link.removeAttribute('aria-current');
+  });
+};
+
+const updateActiveNav = () => {
+  const activationLine = getAnchorOffset() + 2;
+  let activeSection: HTMLElement | undefined;
+
+  for (const section of navSections) {
+    if (section.getBoundingClientRect().top <= activationLine) activeSection = section;
+    else break;
+  }
+
+  setActiveNav(activeSection ? `#${activeSection.id}` : undefined);
+};
+
+let activeNavFrame = 0;
+const queueActiveNavUpdate = () => {
+  if (activeNavFrame) return;
+  activeNavFrame = window.requestAnimationFrame(() => {
+    activeNavFrame = 0;
+    updateActiveNav();
+  });
+};
+
+updateActiveNav();
+window.addEventListener('scroll', queueActiveNavUpdate, { passive: true });
+window.addEventListener('resize', queueActiveNavUpdate);
+
+const getLayoutDocumentTop = (element: HTMLElement) => {
+  let top = 0;
+  let current: HTMLElement | null = element;
+  while (current) {
+    top += current.offsetTop;
+    current = current.offsetParent as HTMLElement | null;
+  }
+  return top;
+};
+
+const scrollToSectionHeading = (section: HTMLElement, behavior: ScrollBehavior) => {
+  const anchor = section.querySelector<HTMLElement>('[data-section-anchor]') ?? section;
+  const top = getLayoutDocumentTop(anchor) - getAnchorOffset();
+  window.scrollTo({ top: Math.max(0, top), behavior });
+};
+
+primaryNavLinks.forEach((link) => {
+  link.addEventListener('click', (event) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const section = document.querySelector<HTMLElement>(link.hash);
+    if (!section) return;
+
+    event.preventDefault();
+    setActiveNav(link.hash);
+    scrollToSectionHeading(section, prefersReducedMotion ? 'auto' : 'smooth');
+    window.history.pushState(null, '', link.hash);
+  });
+});
 
 const revealTargets = document.querySelectorAll<HTMLElement>('[data-reveal]');
 if (prefersReducedMotion || !('IntersectionObserver' in window)) {

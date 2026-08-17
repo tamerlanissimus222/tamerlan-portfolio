@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  data: CollectionEntry<'cases'>['data'];
+  caseId: string;
+  caseNumber: string;
+}
+
+const { data, caseId, caseNumber } = Astro.props;
+---
+
+<aside class="case-context" id={`${caseId}-overview`} aria-labelledby={`${caseId}-title`}>
+  <header class="case-context__header">
+    <p class="case-technical-label">CASE {caseNumber}</p>
+    <h3 id={`${caseId}-title`}>{data.title}</h3>
+    <p class="case-context__level">{data.level}</p>
+  </header>
+
+  <dl class="case-context__facts">
+    <div>
+      <dt>Context</dt>
+      <dd>{data.context}</dd>
+    </div>
+    <div>
+      <dt>Challenge</dt>
+      <dd>{data.challenge}</dd>
+    </div>
+    <div>
+      <dt>Digital approach</dt>
+      <dd>{data.approach}</dd>
+    </div>
+  </dl>
+
+  {data.technicalNotes.length > 0 && (
+    <section class="case-context__notes" aria-label="Technical notes">
+      <p class="case-technical-label">TECHNICAL NOTES</p>
+      <ul>
+        {data.technicalNotes.map((note) => <li>{note}</li>)}
+      </ul>
+    </section>
+  )}
+
+  <section class="case-validation" aria-label="Result and validation">
+    <p class="case-technical-label">RESULT / VALIDATION</p>
+    <strong>{data.validation.status}</strong>
+    <p>{data.validation.summary}</p>
+  </section>
+
+  <ul class="case-context__tags" aria-label="Case methods">
+    {data.tags.map((tag) => <li>{tag}</li>)}
+  </ul>
+</aside>

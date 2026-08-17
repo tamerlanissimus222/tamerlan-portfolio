@@ -1,0 +1,117 @@
+---
+import type { WorkflowMedia, WorkflowMediaRole } from '@/lib/case-types';
+import { withBase } from '@/lib/paths';
+
+interface Props {
+  media: WorkflowMedia;
+  mediaId: string;
+  index: number;
+  role: WorkflowMediaRole;
+  overflow?: boolean;
+}
+
+const { media, mediaId, index, role, overflow = false } = Astro.props;
+const firstSlide = media.type === 'carousel' ? media.slides[0] : undefined;
+const kindLabel = media.type === 'image' ? 'PHOTO' : media.type === 'carousel' ? 'PHOTO SERIES' : media.type === 'model3d' ? '3D / INTERACTIVE' : 'VIDEO';
+const poster = media.type === 'image' ? media.src : media.type === 'carousel' ? firstSlide?.src ?? '' : media.poster;
+const mediaAlt = media.type === 'carousel' ? firstSlide?.alt ?? media.caption : media.alt;
+const aspect = media.aspect ?? (media.type === 'model3d' ? 'square' : media.type === 'youtube' || media.type === 'localVideo' ? 'wide' : 'landscape');
+const objectFit = media.objectFit ?? media.fit ?? 'contain';
+const objectPosition = media.objectPosition ?? 'center center';
+const scale = media.scale ?? 1;
+const tileSpan = media.tileSpan ?? 1;
+const aspectRatio = media.aspectRatio;
+const intrinsicSize = aspect === 'portrait'
+  ? { width: 900, height: 1200 }
+  : aspect === 'square'
+    ? { width: 1000, height: 1000 }
+    : aspect === 'wide'
+      ? { width: 1600, height: 900 }
+      : { width: 1200, height: 900 };
+const source = media.type === 'image'
+  ? withBase(media.src)
+  : media.type === 'carousel'
+    ? withBase(firstSlide?.src ?? '')
+  : media.type === 'youtube'
+    ? `https://www.youtube-nocookie.com/embed/${media.youtubeId}?autoplay=1&rel=0`
+    : media.type === 'model3d'
+      ? media.embedUrl
+      : withBase(media.src);
+---
+
+{media.type === 'carousel' ? (
+  <article
+    class:list={['workflow-media', 'workflow-media--carousel', `workflow-media--${role}`, { 'workflow-media--dominant': role === 'featured' || role === 'primary', 'workflow-media--supporting': role !== 'featured' && role !== 'primary', 'workflow-media--overflow': overflow }]}
+    id={mediaId}
+    role="region"
+    aria-roledescription="carousel"
+    aria-label={`${media.caption}, ${media.slides.length} images`}
+    data-media-carousel
+    data-carousel-interval={media.autoplayMs ?? 2000}
+    data-media-role={role}
+    data-media-aspect={aspect}
+    data-media-fit={objectFit}
+    data-media-position={objectPosition}
+    data-media-scale={scale}
+    data-tile-span={tileSpan}
+    data-has-aspect-ratio={aspectRatio ? 'true' : 'false'}
+    style={`--media-position: ${objectPosition}; --media-scale: ${scale};${aspectRatio ? ` --media-aspect-ratio: ${aspectRatio};` : ''}`}
+  >
+    <div class="workflow-carousel__slides">
+      {media.slides.map((slide, slideIndex) => (
+        <button
+          class:list={['workflow-carousel__slide', { 'is-active': slideIndex === 0 }]}
+          type="button"
+          data-carousel-slide
+          data-case-media-open
+          data-media-type="image"
+          data-media-src={withBase(slide.src)}
+          data-media-caption={slide.caption}
+          data-media-alt={slide.alt}
+          data-media-group={mediaId}
+          data-media-group-index={slideIndex}
+          aria-label={`Enlarge image ${slideIndex + 1} of ${media.slides.length}: ${slide.caption}`}
+          aria-hidden={slideIndex === 0 ? 'false' : 'true'}
+          tabindex={slideIndex === 0 ? 0 : -1}
+        >
+          <img src={withBase(slide.src)} alt={slide.alt} width={intrinsicSize.width} height={intrinsicSize.height} loading="lazy" decoding="async" />
+        </button>
+      ))}
+    </div>
+    <span class="workflow-media__shade" aria-hidden="true"></span>
+    <span class="workflow-media__type">{kindLabel}</span>
+    <span class="workflow-media__index" aria-hidden="true">{String(index).padStart(2, '0')}</span>
+    <span class="workflow-media__caption" data-carousel-caption>{firstSlide?.caption ?? media.caption}</span>
+    <span class="workflow-carousel__counter" data-carousel-counter aria-hidden="true">01 / {String(media.slides.length).padStart(2, '0')}</span>
+    <button class="workflow-carousel__control workflow-carousel__control--previous" type="button" data-carousel-previous aria-label="Previous image">←</button>
+    <button class="workflow-carousel__control workflow-carousel__control--next" type="button" data-carousel-next aria-label="Next image">→</button>
+  </article>
+) : (
+  <button
+    class:list={['workflow-media', `workflow-media--${role}`, { 'workflow-media--dominant': role === 'featured' || role === 'primary', 'workflow-media--supporting': role !== 'featured' && role !== 'primary', 'workflow-media--overflow': overflow }]}
+    type="button"
+    id={mediaId}
+    data-case-media-open
+    data-media-type={media.type}
+    data-media-src={source}
+    data-media-caption={media.caption}
+    data-media-alt={mediaAlt}
+    data-media-role={role}
+    data-media-aspect={aspect}
+    data-media-fit={objectFit}
+    data-media-position={objectPosition}
+    data-media-scale={scale}
+    data-tile-span={tileSpan}
+    data-has-aspect-ratio={aspectRatio ? 'true' : 'false'}
+    style={`--media-position: ${objectPosition}; --media-scale: ${scale};${aspectRatio ? ` --media-aspect-ratio: ${aspectRatio};` : ''}`}
+    aria-label={`Open ${kindLabel.toLowerCase()} ${index}: ${media.caption}`}
+  >
+    <img src={withBase(poster)} alt={mediaAlt} width={intrinsicSize.width} height={intrinsicSize.height} loading="lazy" decoding="async" />
+    <span class="workflow-media__shade" aria-hidden="true"></span>
+    <span class="workflow-media__type">{kindLabel}</span>
+    <span class="workflow-media__index" aria-hidden="true">{String(index).padStart(2, '0')}</span>
+    {(media.type === 'youtube' || media.type === 'localVideo') && <span class="workflow-media__play" aria-hidden="true">▶</span>}
+    <span class="workflow-media__caption">{media.caption}</span>
+    <span class="workflow-media__action" aria-hidden="true">{media.type === 'image' ? 'Enlarge' : 'Open'} ↗</span>
+  </button>
+)}

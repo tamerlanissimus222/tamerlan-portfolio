@@ -1,0 +1,61 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  cases: CollectionEntry<'cases'>[];
+}
+
+const { cases } = Astro.props;
+const initialNumber = String(cases[0]?.data.order ?? 1).padStart(2, '0');
+const total = String(cases.length).padStart(2, '0');
+---
+
+<nav class="case-switcher" aria-label="Select prosthetic case" data-case-switcher>
+  <div class="case-switcher__status" aria-live="polite">
+    <span data-case-current>CASE {initialNumber}</span>
+    <span>/ {total}</span>
+  </div>
+  <div class="case-switcher__tabs" role="tablist" aria-label="Prosthetic cases">
+    {cases.map((entry, index) => {
+      const number = String(entry.data.order).padStart(2, '0');
+      return (
+        <button
+          type="button"
+          role="tab"
+          id={`case-tab-${number}`}
+          aria-controls={`case-panel-${number}`}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          tabindex={index === 0 ? 0 : -1}
+          data-case-select={number}
+          title={entry.data.title}
+        >
+          {number}
+        </button>
+      );
+    })}
+  </div>
+  <div class="case-switcher__steps">
+    <button type="button" data-case-step="-1" disabled>← Previous case</button>
+    <button type="button" data-case-forward><span data-case-forward-label>Next case →</span></button>
+  </div>
+</nav>
+
+<nav class="case-side-navigation" aria-label="Case step navigation" data-case-side-navigation aria-hidden="true">
+  <button class="case-side-navigation__previous" type="button" data-case-step="-1" disabled>
+    <span>← Prev case</span>
+  </button>
+  <button class="case-side-navigation__next" type="button" data-case-forward>
+    <span data-case-forward-label>Next case →</span>
+  </button>
+</nav>
+
+<nav class="case-persistent" aria-label="Current case navigation" data-case-persistent aria-hidden="true">
+  <div class="case-persistent__status" aria-live="polite">
+    <span data-case-current>CASE {initialNumber}</span>
+    <span>/ {total}</span>
+  </div>
+  <div class="case-persistent__actions">
+    <button type="button" data-case-step="-1" disabled aria-label="Previous case">← <span>Previous</span></button>
+    <button type="button" data-case-forward><span data-case-forward-label>Next case →</span></button>
+  </div>
+</nav>

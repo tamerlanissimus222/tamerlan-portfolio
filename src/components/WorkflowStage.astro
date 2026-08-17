@@ -1,0 +1,79 @@
+---
+import type { WorkflowMediaRole, WorkflowStageData } from '@/lib/case-types';
+import MediaPreview from './MediaPreview.astro';
+import WorkflowIcon from './WorkflowIcon.astro';
+
+interface Props {
+  caseId: string;
+  stage: WorkflowStageData;
+  index: number;
+  validationStatus?: string;
+}
+
+const { caseId, stage, index, validationStatus } = Astro.props;
+const stageNumber = String(index + 1).padStart(2, '0');
+const orderedMedia = stage.media
+  .map((media, sourceIndex) => ({ media, sourceIndex }))
+  .sort((a, b) => (a.media.order ?? a.sourceIndex) - (b.media.order ?? b.sourceIndex));
+const previewLimit = 4;
+const overflowCount = Math.max(0, orderedMedia.length - previewLimit);
+const visibleCount = Math.min(orderedMedia.length, previewLimit);
+const resolveRole = (role?: WorkflowMediaRole): WorkflowMediaRole => role ?? 'standard';
+---
+
+<li
+  class:list={['workflow-stage', {
+    'workflow-stage--validation': stage.validation,
+    'workflow-stage--no-media': stage.media.length === 0,
+    'workflow-stage--has-notes': stage.notes.length > 0,
+  }]}
+  data-workflow-stage
+  data-stage-id={stage.id}
+  style={`--stage-order: ${index}`}
+>
+  <header class="workflow-stage__header">
+    <span class="workflow-stage__number">{stageNumber}</span>
+    <WorkflowIcon name={stage.icon} />
+    <h4>{stage.title}</h4>
+    {stage.validation && validationStatus && <span class="workflow-stage__state">{validationStatus}</span>}
+    {overflowCount > 0 && (
+      <button
+        class="workflow-stage__more"
+        type="button"
+        data-stage-expand
+        aria-expanded="false"
+        data-more-label={`+${overflowCount} / View more`}
+        data-less-label="Show less"
+      >
+        <strong>+{overflowCount}</strong>
+        <span>View more</span>
+      </button>
+    )}
+  </header>
+
+  {stage.notes.length > 0 && (
+    <ul class="workflow-stage__notes" aria-label={`${stage.title} technical notes`}>
+      {stage.notes.map((note) => <li>{note}</li>)}
+    </ul>
+  )}
+
+  {stage.media.length > 0 && (
+    <div
+      class="workflow-stage__media"
+      role="list"
+      aria-label={`${stage.title} media`}
+      data-visible-count={visibleCount}
+      data-has-overflow={overflowCount > 0 ? 'true' : 'false'}
+    >
+      {orderedMedia.map(({ media }, mediaIndex) => (
+        <MediaPreview
+          media={media}
+          mediaId={`${caseId}-${stage.id}-media-${mediaIndex + 1}`}
+          index={mediaIndex + 1}
+          role={resolveRole(media.role)}
+          overflow={mediaIndex >= previewLimit}
+        />
+      ))}
+    </div>
+  )}
+</li>

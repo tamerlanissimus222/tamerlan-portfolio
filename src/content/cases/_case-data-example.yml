@@ -1,0 +1,112 @@
+# DOCUMENTED EXAMPLE ONLY
+# Astro does not publish this .yml file. Copy its structure into a .md case file.
+# The visual order follows each optional `order` value, then the written order:
+# 1. Move a whole stage block to reorder stages.
+# 2. Move a media block within `media` to reorder previews.
+# 3. Move a media block to another stage to move that evidence on screen.
+
+order: 4 # Controls the numbered case selector.
+title: "Editable case title"
+eyebrow: "Case 04 / Editable short descriptor"
+level: "[AMPUTATION OR DEFICIENCY LEVEL]"
+
+# Keep these fields short. They are displayed in the compact left column.
+context: "[SHORT CLINICAL CONTEXT]"
+challenge: "[SHORT DESIGN CHALLENGE]"
+approach: "[SHORT DIGITAL APPROACH]"
+
+# Optional: omit this field when there are no case-level notes.
+technicalNotes:
+  - "[EDITABLE TECHNICAL NOTE]"
+
+# Never claim a successful fit unless it is verified.
+validation:
+  status: "VALIDATION COPY PENDING"
+  summary: "[SHORT FITTING OUTCOME / SUPPORTING DETAIL]"
+
+tags:
+  - Patient scan
+  - CAD
+  - FDM
+
+stages:
+  - id: "scan" # Unique within this case; use letters, numbers and hyphens.
+    title: "Scanning"
+    icon: "scan" # Allowed: scan, cad, printer, fit, measure, assembly, test.
+    # Optional. Notes render only when supplied; no empty placeholder is created.
+    notes:
+      - "[EDITABLE STAGE NOTE]"
+    media:
+      # AUTO-ROTATING PHOTO SERIES (manual arrows are added automatically)
+      - type: "carousel"
+        order: 1 # Optional. Lower numbers appear first; otherwise written order is used.
+        role: "standard" # Optional: standard (default), featured, compact.
+        objectFit: "contain" # Optional. Use cover only when deliberate cropping is safe.
+        objectPosition: "50% 45%" # Optional: CSS-style position, for example center top.
+        scale: 1 # Optional: 0.75–1.3. Adjusts the image inside the unchanged tile.
+        tileSpan: 1 # Optional: 1 or 2 columns.
+        # aspectRatio: "4 / 3" # Optional explicit tile ratio. Omit for the systematic default.
+        caption: "Clinical reference series"
+        autoplayMs: 2000 # Optional: 1000–10000. Disabled automatically for reduced motion.
+        slides:
+          - src: "media/example/scan-photo-01.webp" # File inside public/; no leading slash.
+            alt: "Objective, anonymised description of the first image."
+            caption: "Reference view 01"
+          - src: "media/example/scan-photo-02.webp"
+            alt: "Objective, anonymised description of the second image."
+            caption: "Reference view 02"
+
+      # INTERACTIVE 3D
+      - type: "model3d"
+        role: "standard"
+        objectFit: "contain"
+        embedUrl: "https://example.github.io/viewer.html"
+        poster: "media/example/scan-model-poster.webp"
+        alt: "Description of the model poster."
+        caption: "Processed scan"
+
+  - id: "modelling"
+    title: "Digital modelling"
+    icon: "cad"
+    media:
+      # Add or remove as many items as needed. The overview shows the first four.
+      - type: "image"
+        role: "standard"
+        src: "media/example/socket-overlay.webp"
+        alt: "Description of the CAD overlay."
+        caption: "Scan / socket overlay"
+
+  - id: "manufacturing"
+    title: "Additive manufacturing"
+    icon: "printer"
+    media:
+      # YOUTUBE VIDEO: enter only the ID after youtube.com/watch?v= or youtu.be/.
+      - type: "youtube"
+        role: "standard"
+        youtubeId: "VIDEO_ID"
+        poster: "media/example/print-video-poster.webp"
+        alt: "Description of the video poster."
+        caption: "Printing process"
+
+      # LOCAL VIDEO: put both files in public/ and use paths without a leading slash.
+      - type: "localVideo"
+        role: "standard"
+        src: "media/example/print-process.mp4"
+        poster: "media/example/print-process-poster.webp"
+        alt: "Description of the local video poster."
+        caption: "Local manufacturing video"
+
+  - id: "fitting"
+    title: "Fitting / validation"
+    icon: "fit"
+    # Optional. Highlights this stage and reuses validation.status as its state.
+    validation: true
+    media:
+      - type: "image"
+        role: "featured"
+        src: "media/example/fitting.webp"
+        alt: "Anonymised description of the fitting evidence."
+        caption: "Final fitting"
+
+# Optional. Set true while professional copy is incomplete.
+placeholder: true

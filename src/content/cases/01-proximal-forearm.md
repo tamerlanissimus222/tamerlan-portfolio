@@ -1,76 +1,116 @@
 ---
 order: 1
-title: "Proximal forearm transverse deficiency"
-eyebrow: "Case 01 · Socket geometry"
-context: "Anonymised patient, 25, an everyday bionic-prosthesis user. Tight skin without deformation or scarring; moderate subcutaneous tissue and slight elbow-joint hypermobility."
-challenge: "The initial scan captured the arm at approximately 90° of flexion. Instead of discarding the data, the modelling phase became a comparison of two ways to reconstruct socket geometry while preserving comfort throughout elbow motion."
-reasoning: "Approach one repeated the captured flexion and followed the available geometry. Approach two mentally reconstructed the biomechanical axis of the elbow. The second approach aligned more closely with the anatomy and supported more continuous contact through the range of motion."
-iterations:
-  - label: "V1 · Captured geometry"
-    summary: "Repeated the scanned 90° flexion and followed the source geometry."
-  - label: "V2 · Reconstructed axis"
-    summary: "Rebuilt the elbow relationship around the inferred biomechanical axis; anatomically stronger, but the anterior socket edge pressed into soft tissue and the fit felt unusually tight."
-  - label: "V3 · Edge relief"
-    summary: "Adjusted the anterior edge and overall fit. A remaining local discomfort point was resolved with thermal forming, followed by a further shape study to reduce soft-tissue folding and increase motion."
-result: "The socket was accepted positively by the user without reported pain. Thermal forming resolved the remaining anterior-edge issue; the final design direction focused on maintaining contact while reducing folds during flexion."
+title: "Proximal forearm socket"
+eyebrow: "Case 01 / Socket geometry"
+level: "Transverse deficiency"
+context: "[CASE CONTEXT - TO BE ADDED]"
+challenge: "[DESIGN CHALLENGE - TO BE ADDED]"
+approach: "[DIGITAL APPROACH - TO BE ADDED]"
+validation:
+  status: "FIT VERIFIED"
+  summary: "Successful fitting recorded. [SUPPORTING VALIDATION DETAIL - TO BE ADDED]"
 tags:
   - Patient scan
   - Biomechanics
   - Fusion 360
   - Socket iteration
   - FDM
-featuredImage:
-  src: "media/case1-patient-a.webp"
-  alt: "Anonymised comparison of the residual limb and contralateral forearm during assessment."
-  caption: "Initial assessment and anatomical context."
-gallery:
-  - src: "media/case1-patient-b.webp"
-    alt: "Anonymised residual limb viewed from above during assessment."
-    caption: "Residual-limb geometry."
-  - src: "media/case1-patient-c.webp"
-    alt: "Anonymised residual limb in flexion during range-of-motion assessment."
-    caption: "Elbow flexion assessment."
-  - src: "media/case1-context-a.webp"
-    alt: "Black prosthetic socket prototype standing upright with a light inner liner."
-    caption: "Manufactured socket assembly."
-  - src: "media/case1-context-b.webp"
-    alt: "Side view of the black manufactured prosthetic socket with its inner liner visible."
-    caption: "Manufactured geometry, side view."
-  - src: "media/case1-context-c.webp"
-    alt: "Rear view of the manufactured black prosthetic socket prototype."
-    caption: "Manufactured geometry, rear view."
-models:
-  - label: "Residual-limb scan"
-    url: "https://tamerlanissimus222.github.io/Case1/viewer.html"
-    thumbnail:
-      src: "media/case1-scan.webp"
-      alt: "Preview of the residual-limb 3D scan."
-  - label: "Inner socket"
-    url: "https://tamerlanissimus222.github.io/Case1/viewerIS.html"
-    thumbnail:
-      src: "media/case1-v1.webp"
-      alt: "Preview of the inner socket 3D model."
-  - label: "Interface study"
-    url: "https://tamerlanissimus222.github.io/Case1/viewerButer1.html"
-    thumbnail:
-      src: "media/case1-interface.webp"
-      alt: "Preview of the scan-to-socket interface model."
-  - label: "Outer socket"
-    url: "https://tamerlanissimus222.github.io/Case1/viewerOS.html"
-    thumbnail:
-      src: "media/case1-anatomy.webp"
-      alt: "Preview of the outer socket 3D model."
-videos:
-  - id: "5fOTYZr9qmY"
-    title: "Digital modelling process"
-    thumbnail:
-      src: "media/case1-video-process.webp"
-      alt: "Video preview of the digital socket modelling process."
-  - id: "Go_BdPuMweI"
-    title: "Fitting and range-of-motion check"
-    thumbnail:
-      src: "media/case1-preview.webp"
-      alt: "Video preview of the prosthesis fitting check."
+stages:
+  - id: "scan"
+    title: "Scanning"
+    icon: "scan"
+    media:
+      - type: "carousel"
+        role: "standard"
+        aspect: "landscape"
+        caption: "Clinical reference series"
+        autoplayMs: 2000
+        slides:
+          - src: "media/case1-originals/scanning-reference-01.jpg"
+            alt: "Anonymised comparison used as a clinical reference before scanning."
+            caption: "Clinical reference"
+          - src: "media/case1-originals/scanning-reference-02.jpg"
+            alt: "Anonymised residual-limb geometry viewed from above."
+            caption: "Residual-limb geometry"
+          - src: "media/case1-originals/scanning-reference-03.jpg"
+            alt: "Anonymised residual limb positioned during range-of-motion assessment."
+            caption: "Range-of-motion reference"
+      - type: "model3d"
+        role: "standard"
+        aspect: "square"
+        embedUrl: "https://tamerlanissimus222.github.io/Case1/viewer.html"
+        poster: "media/case1-originals/scan-preview.png"
+        alt: "Preview of the anonymised residual-limb 3D scan."
+        caption: "Processed patient scan"
+      - type: "youtube"
+        role: "standard"
+        aspect: "wide"
+        youtubeId: "5fOTYZr9qmY"
+        poster: "media/case1-originals/modelling-process-preview.png"
+        alt: "Video poster showing the digital socket modelling process."
+        caption: "Modelling process"
+
+  - id: "modelling"
+    title: "Digital modelling"
+    icon: "cad"
+    media:
+      - type: "model3d"
+        role: "standard"
+        aspect: "square"
+        embedUrl: "https://tamerlanissimus222.github.io/Case1/viewerIS.html"
+        poster: "media/case1-originals/inner-socket-preview.png"
+        alt: "Preview of the inner socket 3D model."
+        caption: "Inner socket"
+      - type: "model3d"
+        role: "standard"
+        aspect: "square"
+        embedUrl: "https://tamerlanissimus222.github.io/Case1/viewerOS.html"
+        poster: "media/case1-originals/outer-socket-preview.png"
+        alt: "Preview of the outer socket 3D model."
+        caption: "Outer socket"
+      - type: "model3d"
+        role: "standard"
+        aspect: "square"
+        embedUrl: "https://tamerlanissimus222.github.io/Case1/viewerButer1.html"
+        poster: "media/case1-originals/interface-study-preview.png"
+        alt: "Preview of the scan-to-socket interface model."
+        caption: "Interface study"
+
+  - id: "manufacturing"
+    title: "Additive manufacturing"
+    icon: "printer"
+    media:
+      - type: "image"
+        role: "standard"
+        aspect: "portrait"
+        src: "media/case1-originals/manufacturing-assembly.jpg"
+        alt: "Manufactured black prosthetic socket with a light inner liner."
+        caption: "Manufactured assembly"
+      - type: "image"
+        role: "standard"
+        aspect: "portrait"
+        src: "media/case1-originals/manufacturing-side.jpg"
+        alt: "Side view of the manufactured socket and inner liner."
+        caption: "Side geometry"
+      - type: "image"
+        role: "standard"
+        aspect: "portrait"
+        src: "media/case1-originals/manufacturing-rear.jpg"
+        alt: "Rear view of the manufactured socket prototype."
+        caption: "Rear geometry"
+
+  - id: "fitting"
+    title: "Fitting / validation"
+    icon: "fit"
+    validation: true
+    media:
+      - type: "youtube"
+        role: "featured"
+        aspect: "landscape"
+        youtubeId: "Go_BdPuMweI"
+        poster: "media/case1-originals/fitting-preview.png"
+        alt: "Video poster showing the prosthesis fitting and range-of-motion check."
+        caption: "Final fitting check"
 ---
 
-The case content is intentionally anonymised. Replace or expand this file only with consented clinical details.
+All patient-facing media remains anonymised. Replace placeholder copy only with verified, consented case information.

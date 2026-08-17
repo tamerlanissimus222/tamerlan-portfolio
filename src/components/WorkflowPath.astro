@@ -1,0 +1,32 @@
+---
+interface Props {
+  stageCount: number;
+}
+
+const stageCount = Math.max(1, Astro.props.stageCount);
+const viewHeight = stageCount * 100;
+const route = `M44 2 H12 V${viewHeight - 2} H44`;
+---
+
+<svg class="workflow-path" viewBox={`0 0 48 ${viewHeight}`} preserveAspectRatio="none" aria-hidden="true">
+  <path
+    class="workflow-path__base"
+    pathLength="100"
+    d={route}
+  />
+  <path
+    class="workflow-path__pulse workflow-path__pulse--1"
+    pathLength="100"
+    d={route}
+  />
+  <path
+    class="workflow-path__pulse workflow-path__pulse--2"
+    pathLength="100"
+    d={route}
+  />
+  <path
+    class="workflow-path__pulse workflow-path__pulse--3"
+    pathLength="100"
+    d={route}
+  />
+</svg>

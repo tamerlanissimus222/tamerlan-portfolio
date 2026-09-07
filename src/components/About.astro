@@ -4,12 +4,8 @@ import { profile } from '@/data/profile';
 
 <section class="about" id="about" aria-labelledby="about-title" data-intro-transition>
   <div class="about__sticky section-shell">
-    <div class="about__letterbox about__letterbox--top" aria-hidden="true"></div>
-    <div class="about__letterbox about__letterbox--bottom" aria-hidden="true"></div>
-
     <div class="about__stage">
       <div class="about__metrics">
-        <p class="about__technical-label"><span>02</span> / Practice data</p>
         <dl class="about__metric-grid">
           {profile.experienceMetrics.map((item, index) => (
             <div

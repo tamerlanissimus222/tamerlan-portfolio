@@ -19,24 +19,29 @@ const stages = [
 ---
 
 <article class="research-project" data-reveal>
-  <header>
-    <div>
-      <p class="eyebrow">Featured R&D · {String(data.order).padStart(2, '0')}</p>
-      <h3>{data.title}</h3>
-    </div>
-    <span class:list={['status-badge', `status-badge--${data.status.toLowerCase()}`]}>{data.status}</span>
-  </header>
-  {data.placeholder && <p class="placeholder-notice"><strong>Editorial checkpoint</strong> — replace bracketed claims with test evidence.</p>}
-  <ol class="research-project__stages">
-    {stages.map(([label, copy], index) => (
-      <li>
-        <span>{String(index + 1).padStart(2, '0')}</span>
-        <h4>{label}</h4>
-        <p>{copy}</p>
-      </li>
-    ))}
-  </ol>
-  <TagList tags={data.tags} label="R&D project tags" />
-  {data.images.length > 0 && <ImageGallery images={data.images} label={`${data.title} research media`} compact />}
-  {data.models.length > 0 && <div class="model-grid">{data.models.map((model, i) => <Model3DViewer {...model} index={i + 1} />)}</div>}
+  <div class="research-project__media" aria-label={`${data.title} media`}>
+    {data.images.length > 0 && <ImageGallery images={data.images} label={`${data.title} research media`} compact />}
+    {data.models.length > 0 && <div class="model-grid">{data.models.map((model, i) => <Model3DViewer {...model} index={i + 1} />)}</div>}
+  </div>
+  <div class="research-project__split-line" aria-hidden="true"></div>
+  <div class="research-project__content">
+    <header>
+      <div>
+        <p class="eyebrow">Featured development · {String(data.order).padStart(2, '0')}</p>
+        <h3>{data.title}</h3>
+      </div>
+      <span class:list={['status-badge', `status-badge--${data.status.toLowerCase()}`]}>{data.status}</span>
+    </header>
+    {data.placeholder && <p class="placeholder-notice"><strong>Editorial checkpoint</strong> — replace bracketed claims with test evidence.</p>}
+    <ol class="research-project__stages">
+      {stages.map(([label, copy], index) => (
+        <li>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <h4>{label}</h4>
+          <p>{copy}</p>
+        </li>
+      ))}
+    </ol>
+    <TagList tags={data.tags} label="Development project tags" />
+  </div>
 </article>

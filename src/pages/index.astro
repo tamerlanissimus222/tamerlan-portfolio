@@ -4,14 +4,15 @@ import About from '@/components/About.astro';
 import ArchiveGrid from '@/components/ArchiveGrid.astro';
 import CaseStudy from '@/components/CaseStudy.astro';
 import CaseNavigation from '@/components/CaseNavigation.astro';
+import ChapterDivider from '@/components/ChapterDivider.astro';
 import FooterLab from '@/components/FooterLab.astro';
 import Hero from '@/components/Hero.astro';
 import MediaLightbox from '@/components/MediaLightbox.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import ResearchProject from '@/components/ResearchProject.astro';
-import SectionHeader from '@/components/SectionHeader.astro';
 import Workflow from '@/components/Workflow.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { withBase } from '@/lib/paths';
 
 const cases = (await getCollection('cases')).sort((a, b) => a.data.order - b.data.order);
 const research = (await getCollection('research')).sort((a, b) => a.data.order - b.data.order);
@@ -25,14 +26,13 @@ const otherWork = (await getCollection('other-work')).sort((a, b) => a.data.orde
 >
   <Hero />
   <main id="main-content">
+    <ChapterDivider sectionId="about" index="02" label="Practice data" />
     <About />
 
+    <ChapterDivider sectionId="cases" index="03" label="Selected prosthetic cases" labelId="cases-title" />
     <section class="cases" id="cases" aria-labelledby="cases-title" data-case-section>
       <span class="section-scroll-anchor" data-section-anchor aria-hidden="true"></span>
-      <header class="case-section__header">
-        <div class="case-section__heading">
-          <p class="case-technical-label" id="cases-title">03 / SELECTED PROSTHETIC CASES</p>
-        </div>
+      <header class="case-section__header case-section__header--navigation-only">
         <CaseNavigation cases={cases} />
       </header>
       <div class="case-list" data-case-list>
@@ -41,15 +41,16 @@ const otherWork = (await getCollection('other-work')).sort((a, b) => a.data.orde
       <MediaLightbox />
     </section>
 
+    <ChapterDivider sectionId="workflow" label="Digital workflow" />
     <Workflow />
 
-    <section class="research section-shell" id="research" aria-labelledby="research-title">
-      <SectionHeader
-        index="04"
-        eyebrow="R&D / experiments"
-        title="Questions turned into physical evidence."
-        intro="Featured work follows a disciplined Problem → Hypothesis → Development → Result structure."
-      />
+    <ChapterDivider sectionId="research" index="04" label="Developments & experiments" labelId="research-title" />
+    <section
+      class="research section-shell"
+      id="research"
+      aria-labelledby="research-title"
+      style={`--research-blueprint: url("${withBase('media/da-vinci-blueprint.svg')}")`}
+    >
       <div class="research-list">
         {research.map((entry) => <ResearchProject entry={entry} />)}
       </div>
@@ -65,13 +66,14 @@ const otherWork = (await getCollection('other-work')).sort((a, b) => a.data.orde
       </section>
     </section>
 
+    <ChapterDivider sectionId="other-work" index="05" label="Other work" labelId="other-work-title" />
     <section class="other-work section-shell" id="other-work" aria-labelledby="other-work-title">
-      <SectionHeader
-        index="05"
-        eyebrow="Other work"
-        title="Engineering range beyond prosthetics."
-        intro="The source portfolio contained no verified non-prosthetic project media, so these cards are intentionally publication-ready placeholders."
-      />
+      <header class="section-header section-header--content-only" data-reveal>
+        <div>
+          <h2>Engineering range beyond prosthetics.</h2>
+          <p class="section-intro">The source portfolio contained no verified non-prosthetic project media, so these cards are intentionally publication-ready placeholders.</p>
+        </div>
+      </header>
       <div class="project-grid">
         {otherWork.map((entry) => <ProjectCard entry={entry} />)}
       </div>

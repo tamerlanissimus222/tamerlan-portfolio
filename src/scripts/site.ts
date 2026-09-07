@@ -13,6 +13,12 @@ const navSections = primaryNavLinks
   .map((link) => document.querySelector<HTMLElement>(link.hash))
   .filter((section): section is HTMLElement => Boolean(section));
 
+const getSectionAnchor = (section: HTMLElement) => (
+  document.querySelector<HTMLElement>(`[data-section-anchor-for="${section.id}"]`)
+  ?? section.querySelector<HTMLElement>('[data-section-anchor]')
+  ?? section
+);
+
 const getAnchorOffset = () => {
   const rootStyles = window.getComputedStyle(document.documentElement);
   const rem = Number.parseFloat(rootStyles.fontSize) || 16;
@@ -32,7 +38,7 @@ const updateActiveNav = () => {
   let activeSection: HTMLElement | undefined;
 
   for (const section of navSections) {
-    if (section.getBoundingClientRect().top <= activationLine) activeSection = section;
+    if (getSectionAnchor(section).getBoundingClientRect().top <= activationLine) activeSection = section;
     else break;
   }
 
@@ -63,7 +69,7 @@ const getLayoutDocumentTop = (element: HTMLElement) => {
 };
 
 const scrollToSectionHeading = (section: HTMLElement, behavior: ScrollBehavior) => {
-  const anchor = section.querySelector<HTMLElement>('[data-section-anchor]') ?? section;
+  const anchor = getSectionAnchor(section);
   const top = getLayoutDocumentTop(anchor) - getAnchorOffset();
   window.scrollTo({ top: Math.max(0, top), behavior });
 };

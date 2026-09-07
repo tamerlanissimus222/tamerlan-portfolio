@@ -61,6 +61,6 @@ export const profile = {
 export const navigation = [
   { label: 'Cases', longLabel: 'Prosthetic Cases', href: '#cases' },
   { label: 'Workflow', longLabel: 'Digital Workflow', href: '#workflow' },
-  { label: 'R&D', longLabel: 'R&D / Experiments', href: '#research' },
+  { label: 'R&D', longLabel: 'Developments & Experiments', href: '#research' },
   { label: 'Other', longLabel: 'Other Work', href: '#other-work' },
 ] as const;

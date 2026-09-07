@@ -5005,3 +5005,264 @@ article[id] {
     transition: none;
   }
 }
+
+/* Chapter separators and the developments / experiments chapter */
+.chapter-divider {
+  display: flex;
+  width: 100%;
+  height: clamp(6.25rem, 9.5vh, 7.5rem);
+  align-items: flex-end;
+  padding: 0 max(var(--gutter), calc((100% - var(--container)) / 2)) clamp(0.9rem, 1.6vh, 1.25rem);
+  background: #050806;
+  color: var(--color-accent);
+}
+
+.chapter-divider__label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.42em;
+  font-family: var(--font-mono);
+  font-size: clamp(1.35rem, 1.18rem + 0.48vw, 1.62rem);
+  font-weight: 700;
+  letter-spacing: 0.075em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.chapter-divider__index {
+  color: #edf2ef;
+}
+
+.about__sticky {
+  padding-top: clamp(2.5rem, 5vh, 4.5rem);
+  padding-bottom: clamp(2.5rem, 5vh, 4.5rem);
+}
+
+.about__metric-grid {
+  margin-top: 0;
+}
+
+.case-section__header--navigation-only {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: end;
+}
+
+.case-section__header--navigation-only .case-switcher {
+  justify-self: end;
+}
+
+.workflow {
+  padding-top: clamp(3rem, 4vw, 4.5rem);
+}
+
+.workflow__header h2 {
+  margin-top: 0;
+}
+
+.research {
+  position: relative;
+  overflow: hidden;
+  padding-top: clamp(2.5rem, 4vw, 4.5rem);
+  background:
+    linear-gradient(145deg, rgb(18 27 23 / 0.86), rgb(12 19 16 / 0.93)),
+    var(--research-blueprint) center top / cover repeat-y,
+    #121b17;
+  color: #edf2ef;
+}
+
+.research-list {
+  border-top: 0;
+}
+
+.research-project {
+  padding: 0 0 clamp(4rem, 7vw, 7rem);
+  border-bottom-color: rgb(237 242 239 / 0.16);
+}
+
+.research-project__media .image-gallery,
+.research-project__media .model-grid {
+  margin-top: 0;
+}
+
+.research-project__media .image-gallery__grid {
+  gap: clamp(0.8rem, 1.15vw, 1.2rem);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.research-project__media .image-gallery__item,
+.research-project__media .image-gallery__item:nth-child(5n + 1),
+.research-project__media .image-gallery__item:nth-child(5n + 4),
+.research-project__media .image-gallery--compact .image-gallery__item {
+  min-height: clamp(15rem, 20vw, 22rem);
+  aspect-ratio: 4 / 3;
+  border: 1px solid rgb(237 242 239 / 0.22);
+  border-radius: 0.2rem;
+  background: #0c120f;
+  grid-column: auto;
+}
+
+.research-project__media .image-gallery__item img {
+  filter: none;
+  object-fit: cover;
+}
+
+.research-project__media .image-gallery__item:hover,
+.research-project__media .image-gallery__item:focus-visible {
+  border-color: rgb(255 255 255 / 0.58);
+  box-shadow: 0 0 0.65rem rgb(255 255 255 / 0.14);
+}
+
+.research-project__media .image-gallery__item:hover img {
+  filter: none;
+}
+
+.research-project__split-line {
+  width: 100%;
+  height: 1px;
+  margin-top: clamp(2.25rem, 4vw, 4rem);
+  background: rgb(237 242 239 / 0.55);
+}
+
+.research-project__content {
+  padding-top: clamp(2.5rem, 4vw, 4.5rem);
+}
+
+.research-project__content > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.research-project__content > header h3 {
+  max-width: 16ch;
+  margin-top: var(--space-3);
+  font-size: var(--text-xl);
+}
+
+.research .eyebrow,
+.research .research-project__stages span,
+.research .archive-grid--empty article > span {
+  color: var(--color-accent);
+}
+
+.research .status-badge {
+  color: #d6ded9;
+}
+
+.research .placeholder-notice {
+  border-color: rgb(237 242 239 / 0.18);
+  background: rgb(5 8 6 / 0.28);
+  color: #aab7b0;
+}
+
+.research .research-project__stages {
+  border-top-color: rgb(237 242 239 / 0.22);
+  border-bottom-color: rgb(237 242 239 / 0.22);
+}
+
+.research .research-project__stages li {
+  border-right-color: rgb(237 242 239 / 0.18);
+}
+
+.research .research-project__stages p,
+.research .archive > header > p,
+.research .archive-grid--empty article p {
+  color: #aab7b0;
+}
+
+.research .tag-list li,
+.research .archive-grid--empty article {
+  border-color: rgb(237 242 239 / 0.2);
+  color: #d6ded9;
+}
+
+.research .archive-grid--empty article {
+  background: rgb(5 8 6 / 0.18);
+}
+
+.section-header--content-only {
+  display: block;
+  padding-bottom: clamp(2.5rem, 4vw, 4rem);
+}
+
+.section-header--content-only h2 {
+  margin-top: 0;
+}
+
+.other-work {
+  padding-top: clamp(3rem, 4vw, 4.5rem);
+}
+
+@media (max-width: 60rem) {
+  .case-section__header--navigation-only {
+    display: block;
+  }
+
+  .research-project__media .image-gallery__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .research-project__media .image-gallery__item,
+  .research-project__media .image-gallery__item:nth-child(5n + 1),
+  .research-project__media .image-gallery__item:nth-child(5n + 4),
+  .research-project__media .image-gallery--compact .image-gallery__item {
+    min-height: clamp(13rem, 35vw, 19rem);
+  }
+}
+
+@media (max-width: 48rem) {
+  .chapter-divider {
+    height: 5.5rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .chapter-divider__label {
+    gap: 0.36em;
+    font-size: clamp(1.12rem, 4.8vw, 1.38rem);
+    letter-spacing: 0.045em;
+  }
+
+  .about__sticky {
+    padding-top: 3rem;
+    padding-bottom: 3.5rem;
+  }
+
+  .research-project__media .image-gallery__grid {
+    display: grid;
+    overflow-x: auto;
+    padding-bottom: 0.75rem;
+    grid-auto-columns: minmax(17rem, 82%);
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    scroll-snap-type: x proximity;
+  }
+
+  .research-project__media .image-gallery__item,
+  .research-project__media .image-gallery__item:nth-child(5n + 1),
+  .research-project__media .image-gallery__item:nth-child(5n + 4),
+  .research-project__media .image-gallery--compact .image-gallery__item {
+    min-height: 15rem;
+    grid-column: auto;
+    scroll-snap-align: start;
+  }
+
+  .research-project__content > header {
+    display: block;
+  }
+
+  .research-project__content > header h3 {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .research-project__content .status-badge {
+    display: inline-block;
+    margin-top: var(--space-4);
+  }
+}
+
+@media (max-width: 30rem) {
+  .chapter-divider__label {
+    font-size: clamp(1rem, 4.55vw, 1.18rem);
+  }
+}

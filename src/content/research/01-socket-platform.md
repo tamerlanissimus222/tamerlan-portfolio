@@ -11,7 +11,19 @@ tags:
   - Parametric CAD
   - FDM prototype
   - Process development
-images: []
+images:
+  - src: "media/rnd-cad-a.webp"
+    alt: "CAD view of the digital socket platform exterior."
+    caption: "Exterior geometry"
+  - src: "media/rnd-cad-b.webp"
+    alt: "Section view showing the layered socket platform construction."
+    caption: "Layered construction"
+  - src: "media/rnd-cad-c.webp"
+    alt: "CAD view of a coloured socket platform prototype."
+    caption: "Prototype configuration"
+  - src: "media/rnd-cad-d.webp"
+    alt: "Section view of the inner and outer socket interfaces."
+    caption: "Interface study"
 placeholder: true
 ---
 

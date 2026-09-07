@@ -1,0 +1,18 @@
+---
+interface Props {
+  sectionId: string;
+  label: string;
+  index?: string;
+  labelId?: string;
+}
+
+const { sectionId, label, index, labelId } = Astro.props;
+---
+
+<div class="chapter-divider" data-section-anchor-for={sectionId}>
+  <p class="chapter-divider__label" id={labelId}>
+    {index && <span class="chapter-divider__index">{index}</span>}
+    {index && <span aria-hidden="true">/</span>}
+    <span>{label}</span>
+  </p>
+</div>

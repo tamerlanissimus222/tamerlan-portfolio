@@ -9,7 +9,7 @@ import FooterLab from '@/components/FooterLab.astro';
 import Hero from '@/components/Hero.astro';
 import MediaLightbox from '@/components/MediaLightbox.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
-import ResearchProject from '@/components/ResearchProject.astro';
+import ResearchTabs from '@/components/ResearchTabs.astro';
 import Workflow from '@/components/Workflow.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { withBase } from '@/lib/paths';
@@ -52,7 +52,7 @@ const otherWork = (await getCollection('other-work')).sort((a, b) => a.data.orde
       style={`--research-blueprint: url("${withBase('media/da-vinci-blueprint.svg')}")`}
     >
       <div class="research-list">
-        {research.map((entry) => <ResearchProject entry={entry} />)}
+        <ResearchTabs entries={research} />
       </div>
       <section class="archive" aria-labelledby="archive-title">
         <header data-reveal>

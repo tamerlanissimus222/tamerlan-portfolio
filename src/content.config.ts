@@ -115,6 +115,11 @@ const research = defineCollection({
     tags: z.array(z.string()),
     images: z.array(mediaItem).default([]),
     models: z.array(externalModel).default([]),
+    videos: z.array(z.object({
+      videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/),
+      title: z.string(),
+      thumbnail: mediaItem,
+    })).default([]),
     placeholder: z.boolean().default(false),
   }),
 });

@@ -1,0 +1,290 @@
+---
+import { withBase } from '@/lib/paths';
+
+interface Props {
+  id: string;
+  label: string;
+  images: Array<{ src: string; alt: string; caption: string }>;
+}
+
+const { id, label, images } = Astro.props;
+const dialogId = `research-gallery-${id}-dialog`;
+---
+
+<section class="research-gallery" data-research-gallery aria-label={label}>
+  <ul class="research-gallery__rail" style={`--research-gallery-count: ${Math.max(images.length, 1)}`}>
+    {images.map((image, index) => (
+      <li class="research-gallery__item">
+        <button
+          type="button"
+          class="research-gallery__open"
+          data-research-gallery-open
+          data-research-src={withBase(image.src)}
+          data-research-alt={image.alt}
+          data-research-caption={image.caption || image.alt}
+          aria-label={`View ${image.caption || image.alt} (${index + 1} of ${images.length})`}
+          aria-haspopup="dialog"
+          aria-controls={dialogId}
+        >
+          <span class="research-gallery__thumbnail">
+            <img src={withBase(image.src)} alt={image.alt} loading="lazy" decoding="async" />
+          </span>
+          {image.caption && <span class="research-gallery__caption">{image.caption}</span>}
+        </button>
+      </li>
+    ))}
+  </ul>
+
+  <dialog class="research-gallery-dialog" id={dialogId} aria-labelledby={`${dialogId}-title`}>
+    <div class="research-gallery-dialog__stage">
+      <img class="research-gallery-dialog__image" data-research-gallery-image alt="" />
+      <button
+        type="button"
+        class="research-gallery-dialog__close"
+        data-research-gallery-close
+        aria-label="Close image viewer"
+        autofocus
+      >×</button>
+      <button
+        type="button"
+        class="research-gallery-dialog__arrow research-gallery-dialog__arrow--previous"
+        data-research-gallery-previous
+        aria-label="Previous image"
+        hidden={images.length < 2}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
+      </button>
+      <button
+        type="button"
+        class="research-gallery-dialog__arrow research-gallery-dialog__arrow--next"
+        data-research-gallery-next
+        aria-label="Next image"
+        hidden={images.length < 2}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
+      </button>
+    </div>
+    <div class="research-gallery-dialog__footer" aria-live="polite" aria-atomic="true">
+      <p id={`${dialogId}-title`} data-research-gallery-title>{label}</p>
+      <span class="research-gallery-dialog__counter" data-research-gallery-counter></span>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-research-gallery]').forEach((host) => {
+    const buttons = Array.from(host.querySelectorAll<HTMLButtonElement>('[data-research-gallery-open]'));
+    const dialog = host.querySelector<HTMLDialogElement>('.research-gallery-dialog');
+    const image = host.querySelector<HTMLImageElement>('[data-research-gallery-image]');
+    const title = host.querySelector<HTMLElement>('[data-research-gallery-title]');
+    const counter = host.querySelector<HTMLElement>('[data-research-gallery-counter]');
+    const closeButton = host.querySelector<HTMLButtonElement>('[data-research-gallery-close]');
+    const previousButton = host.querySelector<HTMLButtonElement>('[data-research-gallery-previous]');
+    const nextButton = host.querySelector<HTMLButtonElement>('[data-research-gallery-next]');
+    if (!buttons.length || !dialog || !image || !title || !counter || !closeButton || !previousButton || !nextButton) return;
+
+    let currentIndex = 0;
+    let opener: HTMLButtonElement | null = null;
+    let previousOverflow: Array<{ property: string; value: string; priority: string }> = [];
+    let backdropPointerDown = false;
+
+    const showImage = (index: number) => {
+      currentIndex = (index + buttons.length) % buttons.length;
+      const source = buttons[currentIndex];
+      image.src = source.dataset.researchSrc ?? '';
+      image.alt = source.dataset.researchAlt ?? '';
+      title.textContent = source.dataset.researchCaption ?? '';
+      counter.textContent = `${currentIndex + 1} / ${buttons.length}`;
+    };
+
+    buttons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        if (dialog.open) return;
+        opener = button;
+        showImage(index);
+        const rootStyle = document.documentElement.style;
+        previousOverflow = ['overflow-x', 'overflow-y'].map((property) => ({
+          property,
+          value: rootStyle.getPropertyValue(property),
+          priority: rootStyle.getPropertyPriority(property),
+        }));
+        dialog.showModal();
+        rootStyle.setProperty('overflow', 'hidden');
+      });
+    });
+
+    previousButton.addEventListener('click', () => showImage(currentIndex - 1));
+    nextButton.addEventListener('click', () => showImage(currentIndex + 1));
+    closeButton.addEventListener('click', () => dialog.close());
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      showImage(currentIndex + (event.key === 'ArrowRight' ? 1 : -1));
+    });
+
+    const isBackdrop = (event: MouseEvent | PointerEvent) => {
+      if (event.target !== dialog) return false;
+      const bounds = dialog.getBoundingClientRect();
+      return event.clientX < bounds.left || event.clientX > bounds.right
+        || event.clientY < bounds.top || event.clientY > bounds.bottom;
+    };
+
+    dialog.addEventListener('pointerdown', (event) => {
+      backdropPointerDown = isBackdrop(event);
+    });
+    dialog.addEventListener('click', (event) => {
+      if (backdropPointerDown && isBackdrop(event)) dialog.close();
+      backdropPointerDown = false;
+    });
+    dialog.addEventListener('close', () => {
+      const rootStyle = document.documentElement.style;
+      rootStyle.removeProperty('overflow');
+      previousOverflow.forEach(({ property, value, priority }) => {
+        if (value) rootStyle.setProperty(property, value, priority);
+        else rootStyle.removeProperty(property);
+      });
+      backdropPointerDown = false;
+      opener?.focus({ preventScroll: true });
+    });
+    // Native dialog cancellation handles Escape and dispatches the same close cleanup.
+  });
+</script>
+
+<style>
+  .research-gallery { min-width: 0; }
+  .research-gallery__rail {
+    display: grid;
+    grid-template-columns: repeat(var(--research-gallery-count), minmax(13.75rem, 1fr));
+    margin: 0;
+    padding: 0.15rem 0.15rem 0.75rem;
+    overflow-x: auto;
+    gap: 0.85rem;
+    list-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(237 242 239 / 0.3) #0c120f;
+    overscroll-behavior-x: contain;
+  }
+  .research-gallery__item { min-width: 0; }
+  .research-gallery__open {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid rgb(237 242 239 / 0.22);
+    border-radius: 0.2rem;
+    background: #0c120f;
+    color: #edf2ef;
+    text-align: left;
+    cursor: zoom-in;
+    transition: border-color 180ms ease;
+  }
+  .research-gallery__open:hover { border-color: rgb(237 242 239 / 0.65); }
+  .research-gallery__open:focus-visible {
+    outline: 2px solid var(--color-accent, #c5e998);
+    outline-offset: 2px;
+  }
+  .research-gallery__thumbnail {
+    display: block;
+    width: 100%;
+    height: clamp(12rem, 18vw, 17rem);
+  }
+  .research-gallery__thumbnail img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .research-gallery__caption {
+    display: block;
+    width: 100%;
+    flex: 1;
+    padding: 0.7rem 0.8rem;
+    border-top: 1px solid rgb(237 242 239 / 0.14);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    line-height: 1.5;
+  }
+  .research-gallery-dialog {
+    width: calc(100vw - 2rem);
+    max-width: none;
+    height: calc(100svh - 2rem);
+    max-height: none;
+    margin: auto;
+    padding: 0.65rem;
+    overflow: hidden;
+    border: 1px solid rgb(237 242 239 / 0.28);
+    border-radius: 0.3rem;
+    background: #0c120f;
+    color: #edf2ef;
+  }
+  .research-gallery-dialog[open] { display: flex; flex-direction: column; }
+  .research-gallery-dialog::backdrop { background: rgb(0 0 0 / 0.82); }
+  .research-gallery-dialog__stage {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 0;
+  }
+  .research-gallery-dialog__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .research-gallery-dialog__close,
+  .research-gallery-dialog__arrow {
+    position: absolute;
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 0.3);
+    border-radius: 0.25rem;
+    background: rgb(8 12 10 / 0.88);
+    color: #fff;
+    cursor: pointer;
+    transition: opacity 180ms ease;
+  }
+  .research-gallery-dialog__close { top: 0.25rem; right: 0.25rem; z-index: 1; font-size: 1.8rem; opacity: 0.8; }
+  .research-gallery-dialog__arrow { top: 50%; opacity: 0.45; transform: translateY(-50%); }
+  .research-gallery-dialog__arrow[hidden] { display: none; }
+  .research-gallery-dialog__arrow--previous { left: 0.25rem; }
+  .research-gallery-dialog__arrow--next { right: 0.25rem; }
+  .research-gallery-dialog__arrow svg { width: 1.75rem; height: 1.75rem; }
+  .research-gallery-dialog__close:hover,
+  .research-gallery-dialog__arrow:hover,
+  .research-gallery-dialog__close:focus-visible,
+  .research-gallery-dialog__arrow:focus-visible { opacity: 1; }
+  .research-gallery-dialog__close:focus-visible,
+  .research-gallery-dialog__arrow:focus-visible { outline: 2px solid var(--color-accent, #c5e998); outline-offset: 2px; }
+  .research-gallery-dialog__footer {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0.25rem 0.1rem;
+    font-family: var(--font-mono);
+    font-size: clamp(0.72rem, 1vw, 0.9rem);
+    line-height: 1.45;
+  }
+  .research-gallery-dialog__footer p { margin: 0; }
+  .research-gallery-dialog__counter { flex: 0 0 auto; color: rgb(237 242 239 / 0.65); }
+  @media (max-width: 40rem) {
+    .research-gallery__rail { gap: 0.65rem; }
+    .research-gallery-dialog { width: calc(100vw - 1rem); height: calc(100svh - 1rem); padding: 0.4rem; }
+    .research-gallery-dialog__footer { gap: 0.65rem; }
+  }
+  @media (hover: none), (pointer: coarse) {
+    .research-gallery-dialog__arrow { opacity: 0.78; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .research-gallery__open,
+    .research-gallery-dialog__close,
+    .research-gallery-dialog__arrow { transition: none; }
+  }
+</style>

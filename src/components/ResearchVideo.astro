@@ -1,0 +1,210 @@
+---
+import { withBase } from '@/lib/paths';
+
+interface Props {
+  videoId: string;
+  title: string;
+  thumbnail: { src: string; alt: string };
+  index: number;
+}
+
+const { videoId, title, thumbnail, index } = Astro.props;
+const dialogId = `research-video-${videoId}-${index}`;
+const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+---
+
+<div class="research-video" data-research-video data-video-id={videoId} data-video-title={title}>
+  <button
+    type="button"
+    class="research-video__open"
+    data-research-video-open
+    aria-label={`Play ${title} in a larger player`}
+    aria-haspopup="dialog"
+    aria-controls={dialogId}
+  >
+    <span class="research-video__poster">
+      <img src={withBase(thumbnail.src)} alt={thumbnail.alt} loading="lazy" decoding="async" />
+      <span class="research-video__play" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="m9 5 11 7-11 7Z" /></svg>
+      </span>
+    </span>
+    <span class="research-video__caption" aria-hidden="true">
+      <span>VIDEO {String(index).padStart(2, '0')}</span>
+      <span>Watch larger ↗</span>
+    </span>
+  </button>
+  <noscript><a href={watchUrl} target="_blank" rel="noopener noreferrer">Watch {title} on YouTube ↗</a></noscript>
+
+  <dialog class="research-video-dialog" id={dialogId} aria-labelledby={`${dialogId}-title`}>
+    <div class="research-video-dialog__header">
+      <p id={`${dialogId}-title`}>{title}</p>
+      <button type="button" data-research-video-close aria-label="Close video" autofocus>×</button>
+    </div>
+    <div class="research-video-dialog__player" data-research-player></div>
+    <a class="research-video-dialog__external" href={watchUrl} target="_blank" rel="noopener noreferrer">Open on YouTube ↗</a>
+  </dialog>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-research-video]').forEach((host) => {
+    const openButton = host.querySelector<HTMLButtonElement>('[data-research-video-open]');
+    const closeButton = host.querySelector<HTMLButtonElement>('[data-research-video-close]');
+    const dialog = host.querySelector<HTMLDialogElement>('dialog');
+    const player = host.querySelector<HTMLElement>('[data-research-player]');
+    const videoId = host.dataset.videoId;
+    if (!openButton || !closeButton || !dialog || !player || !videoId) return;
+
+    let previousOverflow = '';
+    openButton.addEventListener('click', () => {
+      if (dialog.open) return;
+      const iframe = document.createElement('iframe');
+      const url = new URL(`https://www.youtube-nocookie.com/embed/${videoId}`);
+      url.search = new URLSearchParams({
+        autoplay: '1',
+        controls: '1',
+        fs: '1',
+        playsinline: '1',
+        rel: '0',
+      }).toString();
+      iframe.src = url.href;
+      iframe.title = host.dataset.videoTitle ?? 'YouTube video';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      player.replaceChildren(iframe);
+      previousOverflow = document.documentElement.style.overflow;
+      dialog.showModal();
+      document.documentElement.style.overflow = 'hidden';
+    });
+
+    closeButton.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => {
+      // A backdrop click is outside the actual dialog, not a click on its padding.
+      if (event.target !== dialog) return;
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right
+        || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      player.replaceChildren(); // Stop playback and audio when the window closes, including Escape.
+      document.documentElement.style.overflow = previousOverflow;
+      openButton.focus({ preventScroll: true });
+    });
+  });
+</script>
+
+<style>
+  .research-video { min-width: 0; }
+  .research-video__open {
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid rgb(237 242 239 / 0.22);
+    border-radius: 0.2rem;
+    background: #0c120f;
+    color: #edf2ef;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 250ms ease, box-shadow 250ms ease;
+  }
+  .research-video__open:hover,
+  .research-video__open:focus-visible {
+    border-color: rgb(255 255 255 / 0.58);
+    box-shadow: 0 0 0.65rem rgb(255 255 255 / 0.14);
+  }
+  .research-video__poster {
+    position: relative;
+    display: block;
+    height: clamp(16.2rem, 21.6vw, 23.76rem);
+  }
+  .research-video__poster img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .research-video__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: 3.75rem;
+    height: 3.75rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 0.65);
+    border-radius: 50%;
+    background: rgb(5 8 6 / 0.78);
+    transform: translate(-50%, -50%);
+  }
+  .research-video__play svg { width: 1.8rem; height: 1.8rem; }
+  .research-video__caption {
+    display: flex;
+    min-height: 2.65rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.85rem;
+    border-top: 1px solid rgb(237 242 239 / 0.14);
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+  .research-video__caption > span:first-child { color: var(--color-accent); }
+  .research-video-dialog {
+    width: min(92vw, 82rem, calc((100svh - 8rem) * 16 / 9));
+    max-width: calc(100vw - 1rem);
+    max-height: calc(100svh - 1rem);
+    margin: auto;
+    padding: 0.75rem;
+    overflow: auto;
+    border: 1px solid rgb(237 242 239 / 0.28);
+    border-radius: 0.3rem;
+    background: #0c120f;
+    color: #edf2ef;
+  }
+  .research-video-dialog::backdrop { background: rgb(0 0 0 / 0.8); }
+  .research-video-dialog__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 0 0.65rem 0.25rem;
+  }
+  .research-video-dialog__header p {
+    font-family: var(--font-mono);
+    font-size: clamp(0.75rem, 1vw, 0.95rem);
+    line-height: 1.4;
+  }
+  .research-video-dialog__header button {
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    border: 1px solid rgb(237 242 239 / 0.3);
+    border-radius: 0.2rem;
+    background: transparent;
+    color: inherit;
+    font-size: 1.75rem;
+    cursor: pointer;
+  }
+  .research-video-dialog__player { aspect-ratio: 16 / 9; min-height: 200px; background: #000; }
+  .research-video-dialog__player :global(iframe) { display: block; width: 100%; height: 100%; min-height: 200px; border: 0; }
+  .research-video-dialog__external {
+    display: inline-block;
+    margin: 0.75rem 0 0.25rem;
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  @media (max-width: 40rem) {
+    .research-video__poster { height: clamp(16rem, 85vw, 23rem); }
+    .research-video-dialog { width: calc(100vw - 1rem); padding: 0.5rem; }
+  }
+  @media (max-height: 32rem) and (orientation: landscape) {
+    .research-video-dialog { width: min(92vw, calc((100svh - 6rem) * 16 / 9)); padding: 0.4rem; }
+    .research-video-dialog__header { padding-bottom: 0.35rem; }
+    .research-video-dialog__external { margin: 0.35rem 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .research-video__open { transition: none; }
+  }
+</style>

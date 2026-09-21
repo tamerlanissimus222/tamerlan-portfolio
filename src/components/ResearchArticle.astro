@@ -1,0 +1,79 @@
+---
+import type { ResearchArticleData } from '@/data/research-articles';
+
+interface Props {
+  article: ResearchArticleData;
+}
+
+const { article } = Astro.props;
+---
+
+<article class="research-article" aria-label={article.label} data-reveal>
+  {article.blocks.map((block, index) => (
+    <section
+      class="research-article__block"
+      id={`research-${article.id}-${block.id}`}
+      data-expected-media={block.expectedMediaLabels.join(',')}
+    >
+      <span class="research-article__index" aria-hidden="true">
+        {String(index + 1).padStart(2, '0')} / {String(article.blocks.length).padStart(2, '0')}
+      </span>
+      <div class="research-article__copy">
+        {block.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </section>
+  ))}
+</article>
+
+<style>
+  .research-article {
+    width: min(100%, 78rem);
+    color: #edf2ef;
+  }
+
+  .research-article__block {
+    display: grid;
+    grid-template-columns: minmax(4.5rem, 0.14fr) minmax(0, 1fr);
+    padding: clamp(1.8rem, 3.5vw, 3.5rem) 0;
+    border-top: 1px solid rgb(194 231 151 / 0.2);
+    gap: clamp(1rem, 3vw, 3rem);
+  }
+
+  .research-article__block:first-child {
+    padding-top: clamp(0.4rem, 1vw, 1rem);
+    border-top: 0;
+  }
+
+  .research-article__index {
+    padding-top: 0.35rem;
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: clamp(0.68rem, 0.85vw, 0.78rem);
+    letter-spacing: 0.08em;
+  }
+
+  .research-article__copy {
+    max-width: 72ch;
+  }
+
+  .research-article__copy p {
+    margin: 0;
+    color: rgb(237 242 239 / 0.86);
+    font-size: clamp(1rem, 1.25vw, 1.18rem);
+    line-height: 1.72;
+  }
+
+  .research-article__copy p + p {
+    margin-top: 1.15em;
+  }
+
+  @media (max-width: 40rem) {
+    .research-article__block {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+
+    .research-article__index { padding-top: 0; }
+    .research-article__copy p { line-height: 1.62; }
+  }
+</style>

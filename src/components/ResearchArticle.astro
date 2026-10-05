@@ -1,5 +1,6 @@
 ---
 import type { ResearchArticleData } from '@/data/research-articles';
+import { withBase } from '@/lib/paths';
 
 interface Props {
   article: ResearchArticleData;
@@ -9,21 +10,139 @@ const { article } = Astro.props;
 ---
 
 <article class="research-article" aria-label={article.label} data-reveal>
-  {article.blocks.map((block, index) => (
-    <section
-      class="research-article__block"
-      id={`research-${article.id}-${block.id}`}
-      data-expected-media={block.expectedMediaLabels.join(',')}
-    >
-      <span class="research-article__index" aria-hidden="true">
-        {String(index + 1).padStart(2, '0')} / {String(article.blocks.length).padStart(2, '0')}
-      </span>
+  {article.blocks.map((block) => (
+    <section class="research-article__block" id={`research-${article.id}-${block.id}`}>
       <div class="research-article__copy">
         {block.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
       </div>
+      {block.media.length > 0 && (
+        <div class="research-article__media" style={`--visible-columns: ${Math.min(block.media.length, 3)}`} aria-label="Related media">
+          {block.media.map((media) => (
+            <figure class="research-article__figure">
+              {media.kind === 'image' ? (
+                <button
+                  class="research-article__image-button"
+                  type="button"
+                  aria-label={`Expand ${media.label}`}
+                  data-article-image
+                  data-image-src={withBase(media.src)}
+                  data-image-alt={media.alt}
+                  data-image-label={media.label}
+                >
+                  <img src={withBase(media.src)} alt={media.alt} loading="lazy" decoding="async" />
+                </button>
+              ) : (
+                <div class="research-article__video-card" data-article-video>
+                  <video
+                    src={withBase(media.src)}
+                    poster={withBase(media.poster ?? '')}
+                    aria-label={media.alt}
+                    preload="none"
+                    playsinline
+                    disablepictureinpicture
+                    disableRemotePlayback
+                  ></video>
+                  <div class="research-article__video-controls">
+                    <button type="button" data-video-play aria-label={`Play ${media.label}`}>▶</button>
+                    <input type="range" min="0" max="1000" value="0" step="1" data-video-seek aria-label={`Seek ${media.label}`} />
+                    <button type="button" data-video-fullscreen aria-label={`Fullscreen ${media.label}`}>⛶</button>
+                  </div>
+                </div>
+              )}
+              <figcaption>{media.label}</figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
     </section>
   ))}
+  <dialog class="research-article__lightbox" data-article-lightbox aria-label="Expanded Setka image">
+    <button class="research-article__lightbox-close" type="button" data-lightbox-close aria-label="Close image">×</button>
+    <button class="research-article__lightbox-arrow research-article__lightbox-arrow--previous" type="button" data-lightbox-previous aria-label="Previous image">←</button>
+    <img data-lightbox-image alt="" />
+    <button class="research-article__lightbox-arrow research-article__lightbox-arrow--next" type="button" data-lightbox-next aria-label="Next image">→</button>
+    <p data-lightbox-caption></p>
+  </dialog>
 </article>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.research-article').forEach((article) => {
+    const imageButtons = [...article.querySelectorAll<HTMLButtonElement>('[data-article-image]')];
+    const lightbox = article.querySelector<HTMLDialogElement>('[data-article-lightbox]');
+    const lightboxImage = lightbox?.querySelector<HTMLImageElement>('[data-lightbox-image]');
+    const caption = lightbox?.querySelector<HTMLElement>('[data-lightbox-caption]');
+    let activeImage = 0;
+
+    const showImage = (index: number) => {
+      if (!lightboxImage || !caption || !imageButtons.length) return;
+      activeImage = (index + imageButtons.length) % imageButtons.length;
+      const button = imageButtons[activeImage];
+      lightboxImage.src = button.dataset.imageSrc ?? '';
+      lightboxImage.alt = button.dataset.imageAlt ?? '';
+      caption.textContent = button.dataset.imageLabel ?? '';
+    };
+
+    imageButtons.forEach((button, index) => button.addEventListener('click', () => {
+      showImage(index);
+      lightbox?.showModal();
+    }));
+    lightbox?.querySelector('[data-lightbox-close]')?.addEventListener('click', () => lightbox.close());
+    lightbox?.querySelector('[data-lightbox-previous]')?.addEventListener('click', () => showImage(activeImage - 1));
+    lightbox?.querySelector('[data-lightbox-next]')?.addEventListener('click', () => showImage(activeImage + 1));
+    lightbox?.addEventListener('click', (event) => { if (event.target === lightbox) lightbox.close(); });
+    lightbox?.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); showImage(activeImage - 1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); showImage(activeImage + 1); }
+    });
+
+    article.querySelectorAll<HTMLElement>('[data-article-video]').forEach((card) => {
+      const video = card.querySelector('video');
+      const play = card.querySelector<HTMLButtonElement>('[data-video-play]');
+      const seek = card.querySelector<HTMLInputElement>('[data-video-seek]');
+      const fullscreen = card.querySelector<HTMLButtonElement>('[data-video-fullscreen]');
+      if (!video || !play || !seek || !fullscreen) return;
+
+      const updatePlay = () => {
+        play.textContent = video.paused ? '▶' : 'Ⅱ';
+        play.setAttribute('aria-label', `${video.paused ? 'Play' : 'Pause'} ${video.getAttribute('aria-label') ?? 'video'}`);
+      };
+      const togglePlay = () => {
+        if (video.paused) {
+          article.querySelectorAll('video').forEach((other) => { if (other !== video) other.pause(); });
+          void video.play().catch(() => {});
+        } else video.pause();
+      };
+      play.addEventListener('click', togglePlay);
+      video.addEventListener('click', togglePlay);
+      video.addEventListener('play', updatePlay);
+      video.addEventListener('pause', updatePlay);
+      video.addEventListener('timeupdate', () => {
+        if (Number.isFinite(video.duration) && video.duration > 0) {
+          seek.value = String(Math.round((video.currentTime / video.duration) * 1000));
+        }
+      });
+      seek.addEventListener('input', () => {
+        if (Number.isFinite(video.duration) && video.duration > 0) {
+          video.currentTime = (Number(seek.value) / 1000) * video.duration;
+        }
+      });
+      const setExpanded = (expanded: boolean) => {
+        card.classList.toggle('is-expanded', expanded);
+        fullscreen.setAttribute('aria-label', `${expanded ? 'Close expanded view' : 'Fullscreen'} ${card.closest('figure')?.querySelector('figcaption')?.textContent ?? 'video'}`);
+      };
+      fullscreen.addEventListener('click', async () => {
+        if (card.classList.contains('is-expanded')) { setExpanded(false); return; }
+        if (document.fullscreenElement === card) { await document.exitFullscreen(); return; }
+        if (!document.fullscreenEnabled) { setExpanded(true); return; }
+        try { await card.requestFullscreen(); }
+        catch { setExpanded(true); }
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && card.classList.contains('is-expanded')) setExpanded(false);
+      });
+    });
+  });
+</script>
 
 <style>
   .research-article {
@@ -32,28 +151,15 @@ const { article } = Astro.props;
   }
 
   .research-article__block {
-    display: grid;
-    grid-template-columns: minmax(4.5rem, 0.14fr) minmax(0, 1fr);
-    padding: clamp(1.8rem, 3.5vw, 3.5rem) 0;
-    border-top: 1px solid rgb(194 231 151 / 0.2);
-    gap: clamp(1rem, 3vw, 3rem);
+    padding: 0 0 clamp(1.7rem, 2.6vw, 2.6rem);
   }
 
   .research-article__block:first-child {
-    padding-top: clamp(0.4rem, 1vw, 1rem);
-    border-top: 0;
-  }
-
-  .research-article__index {
-    padding-top: 0.35rem;
-    color: var(--color-accent);
-    font-family: var(--font-mono);
-    font-size: clamp(0.68rem, 0.85vw, 0.78rem);
-    letter-spacing: 0.08em;
+    padding-top: 0;
   }
 
   .research-article__copy {
-    max-width: 72ch;
+    max-width: 78ch;
   }
 
   .research-article__copy p {
@@ -67,13 +173,166 @@ const { article } = Astro.props;
     margin-top: 1.15em;
   }
 
-  @media (max-width: 40rem) {
-    .research-article__block {
-      grid-template-columns: 1fr;
-      gap: 0.8rem;
-    }
+  .research-article__media {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - (var(--visible-columns) - 1) * 0.85rem) / var(--visible-columns));
+    gap: 0.85rem;
+    overflow-x: auto;
+    margin-top: clamp(1.15rem, 2.4vw, 2rem);
+    padding: 0.35rem 0 0.85rem;
+    scroll-snap-type: x proximity;
+    scrollbar-color: rgb(194 231 151 / 0.48) transparent;
+    scrollbar-width: thin;
+  }
 
-    .research-article__index { padding-top: 0; }
+  .research-article__figure {
+    position: relative;
+    min-width: 0;
+    margin: 0;
+    scroll-snap-align: start;
+  }
+
+  .research-article__image-button,
+  .research-article__video-card {
+    display: block;
+    width: 100%;
+    height: clamp(13rem, 25vw, 22rem);
+    overflow: hidden;
+    border: 1px solid rgb(237 242 239 / 0.18);
+    border-radius: 0.45rem;
+    background: #17211b;
+  }
+
+  .research-article__image-button {
+    padding: 0;
+    cursor: zoom-in;
+  }
+
+  .research-article__image-button img,
+  .research-article__video-card video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .research-article__image-button:hover,
+  .research-article__image-button:focus-visible,
+  .research-article__video-card:hover {
+    border-color: rgb(237 242 239 / 0.48);
+    box-shadow: 0 0 1rem rgb(237 242 239 / 0.12);
+  }
+
+  .research-article__image-button:focus-visible,
+  .research-article__video-controls button:focus-visible,
+  .research-article__video-controls input:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .research-article__figure figcaption {
+    position: absolute;
+    top: 0.85rem;
+    left: 0.55rem;
+    z-index: 1;
+    padding: 0.28rem 0.42rem;
+    border-radius: 0.2rem;
+    background: rgb(5 10 7 / 0.76);
+    color: #edf2ef;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-align: left;
+    pointer-events: none;
+  }
+
+  .research-article__video-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .research-article__video-card video {
+    min-height: 0;
+    flex: 1 1 auto;
+    cursor: pointer;
+  }
+
+  .research-article__video-controls {
+    display: flex;
+    align-items: center;
+    flex: 0 0 2.7rem;
+    gap: 0.35rem;
+    padding: 0 0.55rem;
+    background: rgb(5 10 7 / 0.94);
+  }
+
+  .research-article__video-controls button {
+    flex: 0 0 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #edf2ef;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .research-article__video-controls input {
+    width: 100%;
+    min-width: 0;
+    accent-color: var(--color-accent);
+    cursor: pointer;
+  }
+
+  .research-article__video-card:fullscreen,
+  .research-article__video-card.is-expanded {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    width: 100vw;
+    height: 100dvh;
+    border: 0;
+    border-radius: 0;
+    background: #050a07;
+  }
+
+  .research-article__video-card:fullscreen .research-article__video-controls,
+  .research-article__video-card.is-expanded .research-article__video-controls {
+    flex-basis: 3.5rem;
+    padding-inline: 1rem;
+  }
+
+  .research-article__lightbox {
+    width: min(96vw, 90rem);
+    max-width: none;
+    height: min(94vh, 72rem);
+    max-height: none;
+    padding: 3rem 3.5rem 2rem;
+    border: 1px solid rgb(237 242 239 / 0.28);
+    border-radius: 0.55rem;
+    background: #09100c;
+    color: #edf2ef;
+  }
+
+  .research-article__lightbox::backdrop { background: rgb(0 0 0 / 0.88); }
+  .research-article__lightbox[open] { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem; grid-template-rows: minmax(0, 1fr) auto; align-items: center; gap: 0.6rem; }
+  .research-article__lightbox img { grid-column: 2; grid-row: 1; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+  .research-article__lightbox p { grid-column: 2; grid-row: 2; margin: 0; font-family: var(--font-mono); font-size: 0.85rem; text-align: center; }
+  .research-article__lightbox button { border: 0; background: transparent; color: #edf2ef; cursor: pointer; }
+  .research-article__lightbox-close { position: absolute; top: 0.4rem; right: 0.85rem; font-size: 2rem; }
+  .research-article__lightbox-arrow { font-size: 1.6rem; opacity: 0.48; transition: opacity 150ms ease; }
+  .research-article__lightbox-arrow:hover,
+  .research-article__lightbox-arrow:focus-visible { opacity: 1; }
+  .research-article__lightbox-arrow--previous { grid-column: 1; grid-row: 1; }
+  .research-article__lightbox-arrow--next { grid-column: 3; grid-row: 1; }
+
+  @media (max-width: 40rem) {
     .research-article__copy p { line-height: 1.62; }
+    .research-article__media { grid-auto-columns: min(82vw, 21rem); }
+    .research-article__image-button,
+    .research-article__video-card { height: 16rem; }
+    .research-article__lightbox { width: 100vw; height: 100vh; padding: 3.5rem 0.35rem 1.5rem; border-radius: 0; }
   }
 </style>

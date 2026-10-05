@@ -1,0 +1,113 @@
+---
+import { centerOfMassStory } from '@/data/center-of-mass-story';
+import ResearchGallery from './ResearchGallery.astro';
+
+interface Props {
+  images: Array<{ src: string; alt: string; caption: string }>;
+}
+
+const { images } = Astro.props;
+---
+
+<article class="center-of-mass" data-center-of-mass aria-label="Center of mass study">
+  <div class="center-of-mass__reading">
+    <div class="center-of-mass__pages">
+      {centerOfMassStory.map((paragraphs, index) => (
+        <div class:list={['center-of-mass__page', { 'is-active': index === 0 }]} data-center-of-mass-page aria-hidden={index !== 0}>
+          {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      ))}
+    </div>
+    <nav class="center-of-mass__navigation" aria-label="Study text">
+      <span class="center-of-mass__count" data-center-of-mass-count aria-live="polite">01 / {String(centerOfMassStory.length).padStart(2, '0')}</span>
+      <div class="center-of-mass__actions">
+        <button type="button" data-center-of-mass-previous disabled aria-label="Previous text page">← Previous</button>
+        <button type="button" data-center-of-mass-next aria-label="Next text page">Next →</button>
+      </div>
+    </nav>
+  </div>
+  <ResearchGallery id="center-of-mass" label="Center of mass" images={images} centeredGrid />
+</article>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-center-of-mass]').forEach((host) => {
+    const pages = [...host.querySelectorAll<HTMLElement>('[data-center-of-mass-page]')];
+    const count = host.querySelector<HTMLElement>('[data-center-of-mass-count]');
+    const previous = host.querySelector<HTMLButtonElement>('[data-center-of-mass-previous]');
+    const next = host.querySelector<HTMLButtonElement>('[data-center-of-mass-next]');
+    if (!pages.length || !count || !previous || !next) return;
+
+    let current = 0;
+    const showPage = (index: number) => {
+      current = Math.max(0, Math.min(index, pages.length - 1));
+      pages.forEach((page, pageIndex) => {
+        const active = pageIndex === current;
+        page.classList.toggle('is-active', active);
+        page.setAttribute('aria-hidden', String(!active));
+      });
+      count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(pages.length).padStart(2, '0')}`;
+      previous.disabled = current === 0;
+      next.disabled = current === pages.length - 1;
+    };
+
+    previous.addEventListener('click', () => showPage(current - 1));
+    next.addEventListener('click', () => showPage(current + 1));
+  });
+</script>
+
+<style>
+  .center-of-mass { min-width: 0; }
+  .center-of-mass__reading {
+    display: flex;
+    min-height: clamp(15rem, 31svh, 20rem);
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(1rem, 1.65vw, 1.5rem);
+    border: 1px solid rgb(237 242 239 / 0.2);
+    background: rgb(7 14 10 / 0.64);
+  }
+  .center-of-mass__pages { display: grid; width: 100%; max-width: 78rem; }
+  .center-of-mass__page { grid-area: 1 / 1; visibility: hidden; }
+  .center-of-mass__page.is-active { visibility: visible; }
+  .center-of-mass__page p {
+    margin: 0 0 0.75rem;
+    color: #d8e2d9;
+    font-size: clamp(0.9rem, 1.06vw, 1.04rem);
+    line-height: 1.52;
+  }
+  .center-of-mass__page p:last-child { margin-bottom: 0; }
+  .center-of-mass__navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid rgb(194 231 151 / 0.19);
+  }
+  .center-of-mass__count {
+    color: #c2e797;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  .center-of-mass__actions { display: flex; gap: 0.5rem; }
+  .center-of-mass__actions button {
+    min-width: 6.5rem;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid rgb(237 242 239 / 0.3);
+    background: transparent;
+    color: #edf2ef;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    cursor: pointer;
+  }
+  .center-of-mass__actions button:hover:not(:disabled) { border-color: #edf2ef; }
+  .center-of-mass__actions button:focus-visible { outline: 2px solid #c2e797; outline-offset: 2px; }
+  .center-of-mass__actions button:disabled { opacity: 0.38; cursor: default; }
+  .center-of-mass :global(.research-gallery) { margin-top: clamp(0.75rem, 1.5vw, 1.25rem); }
+  @media (max-width: 40rem) {
+    .center-of-mass__reading { min-height: 0; }
+    .center-of-mass__page p { font-size: 0.9rem; }
+  }
+</style>

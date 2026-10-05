@@ -4,6 +4,7 @@ import { researchTabs } from '@/data/research-tabs';
 import ResearchProject from './ResearchProject.astro';
 import ResearchGallery from './ResearchGallery.astro';
 import ResearchArticle from './ResearchArticle.astro';
+import ResearchCenterOfMass from './ResearchCenterOfMass.astro';
 
 interface Props {
   entries: CollectionEntry<'research'>[];
@@ -45,6 +46,8 @@ const tabs = researchTabs.map((tab) => {
       >
         {tab.entry ? <ResearchProject entry={tab.entry} /> : tab.article ? (
           <ResearchArticle article={tab.article} />
+        ) : tab.id === 'center-of-mass' && tab.images?.length ? (
+          <ResearchCenterOfMass images={tab.images} />
         ) : tab.images?.length ? (
           <ResearchGallery id={tab.id} label={tab.label} images={tab.images} />
         ) : (

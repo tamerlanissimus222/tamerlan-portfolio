@@ -16,10 +16,12 @@
     "verify:win11": "node scripts/verify-environment.mjs"
   },
   "dependencies": {
-    "astro": "7.2.0"
+    "astro": "7.2.0",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@types/three": "^0.186.0",
     "sharp": "0.35.3",
     "typescript": "6.0.3"
   }

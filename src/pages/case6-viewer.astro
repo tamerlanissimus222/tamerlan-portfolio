@@ -1,0 +1,83 @@
+---
+import { withBase } from '@/lib/paths';
+const case7 = Astro.props.case7 === true;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{case7 ? 'Case 07 · Interactive 3D assembly' : 'Case 06 · Interactive 3D models'}</title>
+  </head>
+  <body>
+    <main
+      class="viewer"
+      data-case-model-viewer
+      data-model={case7 ? 'case7' : undefined}
+      data-asset-base={withBase(case7 ? 'media/case7/' : 'media/case6/')}
+      data-decoder-base={withBase('vendor/draco/')}
+    >
+      <div class="viewer__stage">
+        <div class="viewer__canvas" data-viewer-canvas aria-label="Interactive 3D model. Drag to rotate; scroll or pinch to zoom."></div>
+        <p class="viewer__status" data-viewer-status role="status" aria-live="polite">Loading 3D model…</p>
+        <div class="viewer__topline">
+          <span data-viewer-title>{case7 ? 'Case 07 · 3D model' : 'Case 06 · 3D model'}</span>
+          <button type="button" data-viewer-reset aria-label="Reset model view">Reset view ↺</button>
+        </div>
+        <p class="viewer__hint">Drag to rotate <span aria-hidden="true">·</span> Scroll or pinch to zoom</p>
+      </div>
+      <aside class="viewer__sidebar" aria-label="Model elements and opacity">
+        <h1>Model elements</h1>
+        <p>Show a part with the eye icon, then adjust its opacity.</p>
+        <div class="viewer__parts" data-viewer-parts role="group" aria-label="Show or hide model elements and set opacity"></div>
+      </aside>
+    </main>
+    <script>
+      import '@/scripts/case6-viewer';
+    </script>
+  </body>
+</html>
+
+<style>
+  :global(*) { box-sizing: border-box; }
+  :global(html), :global(body) { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+  :global(body) { font-family: Arial, Helvetica, sans-serif; background: #08192d; color: #edf2f7; }
+  :global(button) { font: inherit; }
+  .viewer { display: grid; grid-template-columns: minmax(0, 1fr) clamp(15rem, 24vw, 19rem); width: 100%; height: 100%; min-height: 0; overflow: hidden; background: #08192d; }
+  .viewer__stage { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: radial-gradient(circle at 48% 42%, #142740 0%, #08192d 68%); }
+  .viewer__canvas { position: absolute; inset: 0; cursor: grab; touch-action: none; }
+  .viewer__canvas:active { cursor: grabbing; }
+  .viewer__canvas :global(canvas) { display: block; width: 100%; height: 100%; }
+  .viewer__topline { position: absolute; z-index: 2; top: 0; right: 0; left: 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: clamp(.75rem, 1.6vw, 1.25rem); background: linear-gradient(#061221b5, transparent); font-size: .78rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; pointer-events: none; }
+  .viewer__topline button, :global(.viewer__parts button) { pointer-events: auto; border: 1px solid #8ca1bf80; border-radius: .25rem; background: #11233dd9; color: #e9f0fb; cursor: pointer; transition: background .18s ease, border-color .18s ease, opacity .18s ease; }
+  .viewer__topline button { padding: .45rem .7rem; font-size: .75rem; }
+  .viewer__topline button:hover, :global(.viewer__parts button:hover), .viewer__topline button:focus-visible, :global(.viewer__parts button:focus-visible) { border-color: #b6c8e4; background: #243d60; outline: none; }
+  .viewer__hint { position: absolute; z-index: 2; bottom: .8rem; left: 1rem; margin: 0; color: #aebdd0; font-size: .75rem; pointer-events: none; }
+  .viewer__sidebar { min-width: 0; min-height: 0; overflow-y: auto; padding: 1.1rem .9rem; border-left: 1px solid #48617f; background: #0d2038; }
+  .viewer__sidebar h1 { margin: 0 0 .35rem; font-size: .9rem; letter-spacing: .1em; text-transform: uppercase; }
+  .viewer__sidebar > p { margin: 0 0 1.1rem; color: #aebdd0; font-size: .79rem; line-height: 1.4; }
+  .viewer__parts { display: grid; gap: .65rem; }
+  :global(.viewer__part) { padding: .6rem; border: 1px solid #48617f; border-radius: .3rem; background: #132943; }
+  :global(.viewer__parts button) { display: inline-flex; align-items: center; gap: .5rem; width: 100%; min-height: 2.2rem; padding: .3rem .45rem; text-align: left; font-size: .9rem; }
+  :global(.viewer__parts button[aria-pressed='false']) { color: #aebdd0; }
+  :global(.viewer__parts button:disabled) { opacity: .4; cursor: not-allowed; }
+  :global(.viewer__eye) { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  :global(.viewer__eye line) { display: block; }
+  :global(.viewer__parts button[aria-pressed='true'] .viewer__eye line) { display: none; }
+  :global(.viewer__swatch) { width: .55rem; height: .55rem; flex: 0 0 auto; border-radius: 50%; background: var(--part-color); }
+  :global(.viewer__opacity) { display: grid; grid-template-columns: 1fr auto; gap: .25rem .5rem; margin-top: .45rem; color: #c9d7e7; font-size: .72rem; }
+  :global(.viewer__opacity input) { grid-column: 1 / -1; width: 100%; margin: .15rem 0 0; accent-color: var(--part-color); cursor: pointer; }
+  .viewer__status { position: absolute; z-index: 3; top: 50%; left: 50%; width: min(28rem, 80%); margin: 0; padding: .8rem 1rem; transform: translate(-50%, -50%); border: 1px solid #8ca1bf80; background: #08192de8; color: #edf2f7; text-align: center; font-size: .82rem; }
+  .viewer__status[hidden] { display: none; }
+  @media (max-width: 48rem) {
+    .viewer { grid-template-columns: minmax(0, 1fr) clamp(8.5rem, 39%, 15rem); }
+    .viewer__topline { align-items: flex-start; flex-direction: column; gap: .35rem; font-size: .62rem; }
+    .viewer__topline button { font-size: .66rem; }
+    .viewer__sidebar { padding: .65rem .4rem; }
+    .viewer__sidebar h1 { font-size: .72rem; }
+    .viewer__sidebar > p { font-size: .68rem; }
+    :global(.viewer__part) { padding: .35rem; }
+    :global(.viewer__parts button) { gap: .3rem; padding: .3rem; font-size: .84rem; }
+    .viewer__hint { left: .5rem; font-size: .64rem; }
+  }
+</style>

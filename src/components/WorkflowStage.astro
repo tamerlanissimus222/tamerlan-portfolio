@@ -65,6 +65,12 @@ const resolveRole = (role?: WorkflowMediaRole): WorkflowMediaRole => role ?? 'st
       data-visible-count={visibleCount}
       data-has-overflow={overflowCount > 0 ? 'true' : 'false'}
     >
+      {stage.transitionLabel && (
+        <div class="workflow-stage__transition" aria-hidden="true">
+          <span>{stage.transitionLabel}</span>
+          <i></i>
+        </div>
+      )}
       {orderedMedia.map(({ media }, mediaIndex) => (
         <MediaPreview
           media={media}

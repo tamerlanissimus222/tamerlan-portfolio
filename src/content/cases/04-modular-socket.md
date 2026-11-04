@@ -1,0 +1,105 @@
+---
+order: 4
+title: "Modular socket assembly"
+eyebrow: "Case 04 / Scan-to-assembly"
+level: "[DEFICIENCY LEVEL - TO BE ADDED]"
+context: "[CASE CONTEXT - TO BE ADDED]"
+challenge: "[DESIGN CHALLENGE - TO BE ADDED]"
+approach: "[DIGITAL APPROACH - TO BE ADDED]"
+validation:
+  status: "VALIDATION COPY PENDING"
+  summary: "[FITTING OUTCOME AND SUPPORTING DETAIL - TO BE ADDED]"
+tags:
+  - 3D scanning
+  - Socket modelling
+  - Modular assembly
+  - Fitting
+stages:
+  - id: "scan"
+    title: "Scanning"
+    icon: "scan"
+    media:
+      - type: "model3d"
+        role: "standard"
+        aspect: "square"
+        embedUrl: "case4-viewer?mode=scan"
+        poster: "media/case4/case4-scan-preview.webp"
+        alt: "Blue 3D scan of the residual limb, isolated from the assembly."
+        caption: "EliScan · interactive model"
+      - type: "youtube"
+        role: "standard"
+        aspect: "wide"
+        youtubeId: "_Zt3AViw1pw"
+        poster: "media/case4/youtube-_Zt3AViw1pw.jpg"
+        alt: "Video poster showing the residual-limb scanning process."
+        caption: "Scan capture"
+
+  - id: "modelling"
+    title: "Digital modelling / assembly"
+    icon: "cad"
+    media:
+      - type: "model3d"
+        role: "standard"
+        aspect: "portrait"
+        objectFit: "contain"
+        embedUrl: "case4-viewer?mode=assembly"
+        poster: "media/case4/case4-model-preview.webp"
+        alt: "CAD preview of the modular prosthetic socket and forearm assembly."
+        caption: "Interactive assembly · four layers"
+      - type: "carousel"
+        role: "standard"
+        aspect: "landscape"
+        caption: "Prototype photo series"
+        autoplayMs: 3500
+        slides:
+          - src: "media/case4/case4-photo-2.webp"
+            alt: "Black prosthetic socket and terminal-device assembly, front view."
+            caption: "Prototype · view 1 / 7"
+          - src: "media/case4/case4-photo-3.webp"
+            alt: "Black prosthetic socket and terminal-device assembly, side view."
+            caption: "Prototype · view 2 / 7"
+          - src: "media/case4/case4-photo-4.webp"
+            alt: "Close view of the black socket and metal hinge."
+            caption: "Prototype · view 3 / 7"
+          - src: "media/case4/case4-photo-5.webp"
+            alt: "Light-coloured socket and cosmetic hand, front view."
+            caption: "Prototype · view 4 / 7"
+          - src: "media/case4/case4-photo-6.webp"
+            alt: "Light-coloured prosthesis with cosmetic hand, oblique view."
+            caption: "Prototype · view 5 / 7"
+          - src: "media/case4/case4-photo-7.webp"
+            alt: "Light-coloured socket assembly shown from the side."
+            caption: "Prototype · view 6 / 7"
+          - src: "media/case4/case4-photo-8.webp"
+            alt: "Light-coloured socket assembly and cosmetic hand, front view."
+            caption: "Prototype · view 7 / 7"
+      - type: "youtube"
+        role: "standard"
+        aspect: "wide"
+        youtubeId: "mrUG_XuF-to"
+        poster: "media/case4/youtube-mrUG_XuF-to.jpg"
+        alt: "Video poster showing handling of the light-coloured prosthetic assembly."
+        caption: "Assembly demonstration"
+
+  - id: "demonstration"
+    title: "Functional demonstrations"
+    icon: "test"
+    media:
+      - type: "youtube"
+        role: "standard"
+        aspect: "wide"
+        youtubeId: "VubS6JvI5Lk"
+        poster: "media/case4/youtube-VubS6JvI5Lk.jpg"
+        alt: "Video poster showing a person wearing the dark prosthetic prototype."
+        caption: "Prototype demonstration 01"
+      - type: "youtube"
+        role: "standard"
+        aspect: "wide"
+        youtubeId: "B23AQ0OuYdw"
+        poster: "media/case4/youtube-B23AQ0OuYdw.jpg"
+        alt: "Video poster showing a person wearing the light-coloured prosthetic prototype."
+        caption: "Prototype demonstration 02"
+placeholder: true
+---
+
+The media is available; case narrative and validation wording remain editable placeholders.

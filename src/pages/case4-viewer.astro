@@ -1,0 +1,74 @@
+---
+import { withBase } from '@/lib/paths';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Case 04 · Interactive 3D model</title>
+  </head>
+  <body>
+    <main class="viewer" data-case4-viewer data-asset-base={withBase('media/case4/')}>
+      <div class="viewer__canvas" data-viewer-canvas aria-label="Interactive 3D model. Drag to rotate; scroll or pinch to zoom."></div>
+      <p class="viewer__status" data-viewer-status role="status" aria-live="polite">Loading 3D model…</p>
+      <div class="viewer__topline">
+        <span data-viewer-title>Case 04 · 3D model</span>
+        <button type="button" data-viewer-reset aria-label="Reset model view">Reset view ↺</button>
+      </div>
+      <div class="viewer__bottomline">
+        <p>Drag to rotate <span aria-hidden="true">·</span> Scroll or pinch to zoom</p>
+        <div class="viewer__parts" data-viewer-parts aria-label="Toggle model parts" hidden>
+          <button type="button" data-part="2" aria-pressed="true" aria-label="Hide outer extension">
+            <svg class="viewer__eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12c2.6-4 6-6 10-6s7.4 2 10 6c-2.6 4-6 6-10 6S4.6 16 2 12Z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg><span>Outer extension</span>
+          </button>
+          <button type="button" data-part="3" aria-pressed="true" aria-label="Hide distal outer socket">
+            <svg class="viewer__eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12c2.6-4 6-6 10-6s7.4 2 10 6c-2.6 4-6 6-10 6S4.6 16 2 12Z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg><span>Distal socket</span>
+          </button>
+          <button type="button" data-part="4" aria-pressed="true" aria-label="Hide inner socket">
+            <svg class="viewer__eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12c2.6-4 6-6 10-6s7.4 2 10 6c-2.6 4-6 6-10 6S4.6 16 2 12Z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg><span>Inner socket</span>
+          </button>
+          <button type="button" data-part="5" aria-pressed="true" aria-label="Hide support bars">
+            <svg class="viewer__eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12c2.6-4 6-6 10-6s7.4 2 10 6c-2.6 4-6 6-10 6S4.6 16 2 12Z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg><span>Support bars</span>
+          </button>
+        </div>
+      </div>
+    </main>
+    <script>
+      import '@/scripts/case4-viewer';
+    </script>
+  </body>
+</html>
+
+<style>
+  :global(*) { box-sizing: border-box; }
+  :global(html), :global(body) { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+  :global(body) { font-family: Arial, Helvetica, sans-serif; background: #08192d; color: #edf2f7; }
+  :global(button) { font: inherit; }
+  .viewer { position: relative; width: 100%; height: 100%; overflow: hidden; background: radial-gradient(circle at 48% 42%, #142740 0%, #08192d 68%); }
+  .viewer__canvas { position: absolute; inset: 0; cursor: grab; touch-action: none; }
+  .viewer__canvas:active { cursor: grabbing; }
+  .viewer__canvas :global(canvas) { display: block; width: 100%; height: 100%; }
+  .viewer__topline, .viewer__bottomline { position: absolute; z-index: 2; right: 0; left: 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: clamp(.75rem, 1.6vw, 1.25rem); pointer-events: none; }
+  .viewer__topline { top: 0; background: linear-gradient(#061221b5, transparent); font-size: .78rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+  .viewer__bottomline { bottom: 0; align-items: flex-end; background: linear-gradient(transparent, #061221dc); }
+  .viewer__bottomline p { margin: 0; color: #aebdd0; font-size: .75rem; }
+  .viewer__topline button, .viewer__parts button { pointer-events: auto; border: 1px solid #8ca1bf80; border-radius: .25rem; background: #11233dd9; color: #e9f0fb; cursor: pointer; transition: background .18s ease, border-color .18s ease, opacity .18s ease; }
+  .viewer__topline button { padding: .45rem .7rem; font-size: .72rem; }
+  .viewer__topline button:hover, .viewer__parts button:hover, .viewer__topline button:focus-visible, .viewer__parts button:focus-visible { border-color: #b6c8e4; background: #243d60; outline: none; }
+  .viewer__parts { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .4rem; max-width: 78%; pointer-events: auto; }
+  .viewer__parts[hidden] { display: none; }
+  .viewer__parts button { display: inline-flex; align-items: center; gap: .35rem; padding: .5rem .65rem; white-space: nowrap; font-size: .73rem; }
+  .viewer__parts button[aria-pressed='false'] { opacity: .5; }
+  .viewer__eye { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .viewer__eye line { display: none; }
+  .viewer__parts button[aria-pressed='false'] .viewer__eye line { display: block; }
+  .viewer__status { position: absolute; z-index: 3; top: 50%; left: 50%; width: min(28rem, 80%); margin: 0; padding: .8rem 1rem; transform: translate(-50%, -50%); border: 1px solid #8ca1bf80; background: #08192de8; color: #edf2f7; text-align: center; font-size: .82rem; }
+  .viewer__status[hidden] { display: none; }
+  @media (max-width: 45rem) {
+    .viewer__bottomline { display: block; }
+    .viewer__bottomline p { margin-bottom: .6rem; }
+    .viewer__parts { max-width: none; justify-content: flex-start; }
+    .viewer__parts button { padding: .43rem .5rem; font-size: .68rem; }
+  }
+</style>

@@ -40,6 +40,7 @@ export type WorkflowMedia = WorkflowMediaDisplay & (
       poster: string;
       alt: string;
       caption: string;
+      warning?: string;
     }
   | {
       type: 'model3d';
@@ -61,6 +62,7 @@ export interface WorkflowStageData {
   id: string;
   title: string;
   icon: WorkflowIconName;
+  transitionLabel?: string;
   notes: string[];
   validation: boolean;
   media: WorkflowMedia[];

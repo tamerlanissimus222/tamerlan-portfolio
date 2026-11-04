@@ -4131,7 +4131,8 @@ article[id] {
   grid-template-columns: minmax(0, 36rem);
 }
 
-#case-panel-01 .workflow-stage__media[data-visible-count='1'] {
+#case-panel-01 .workflow-stage__media[data-visible-count='1'],
+#case-panel-07 .workflow-stage__media[data-visible-count='1'] {
   justify-content: center;
 }
 
@@ -5264,5 +5265,265 @@ article[id] {
 @media (max-width: 30rem) {
   .chapter-divider__label {
     font-size: clamp(1rem, 4.55vw, 1.18rem);
+  }
+}
+
+/* Case selection uses the same browser-tab pattern as development projects. */
+.case-section__header--navigation-only {
+  justify-items: stretch;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.case-section__header--navigation-only .case-switcher {
+  display: block;
+  width: 100%;
+  margin-top: 0;
+  justify-self: stretch;
+}
+
+.case-switcher__tabs {
+  justify-content: flex-start;
+  gap: 0.3rem;
+  overflow-x: auto;
+  border-bottom: 1px solid rgb(194 231 151 / 0.28);
+  scrollbar-width: thin;
+  scrollbar-color: rgb(194 231 151 / 0.35) transparent;
+}
+
+.case-switcher__tabs button {
+  display: flex;
+  width: auto;
+  min-width: max-content;
+  min-height: 3.25rem;
+  aspect-ratio: auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem clamp(1rem, 2vw, 1.6rem);
+  border: 1px solid rgb(237 242 239 / 0.14);
+  border-bottom: 0;
+  border-radius: 0.65rem 0.65rem 0 0;
+  background: rgb(5 10 7 / 0.5);
+  color: #aebbb3;
+  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.case-switcher__tabs button:hover {
+  border-color: rgb(194 231 151 / 0.28);
+  background: #17231c;
+  color: #edf2ef;
+}
+
+.case-switcher__tabs button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -5px;
+}
+
+.case-switcher__tabs button[aria-selected='true'] {
+  border-color: rgb(194 231 151 / 0.28);
+  background: #1b2a21;
+  color: #edf2ef;
+  box-shadow: inset 0 2px var(--color-accent);
+}
+
+.case-switcher__tab-number {
+  color: var(--color-accent);
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.case-media-dialog[data-gallery='case-01-manufacturing-media-1'] {
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  border: 0;
+}
+
+.case-media-dialog[data-gallery='case-01-manufacturing-media-1'] .case-media-dialog__shell {
+  height: 100dvh;
+  max-height: 100dvh;
+}
+
+.case-media-dialog[data-gallery='case-01-manufacturing-media-1'] .case-media-dialog__viewer {
+  height: auto;
+  min-height: 0;
+}
+
+.case-media-dialog[data-gallery='case-01-manufacturing-media-1'] .case-media-dialog__viewer img {
+  max-height: none;
+}
+
+.case-media-dialog[data-gallery='case-01-manufacturing-media-1'] .case-media-dialog__navigation {
+  width: clamp(3.5rem, 5vw, 5rem);
+}
+
+@media (max-width: 40rem) {
+  .case-switcher__tabs button {
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  #case-panel-01 [data-stage-id='manufacturing'] .workflow-stage__media[data-visible-count='3'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #case-panel-01 [data-stage-id='manufacturing'] .workflow-stage__media .workflow-media {
+    min-height: clamp(13rem, 70vw, 20rem);
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 60rem) {
+  #case-panel-04 [data-stage-id='modelling'] .workflow-stage__media[data-visible-count='3'],
+  #case-panel-06 [data-stage-id='design-assembly'] .workflow-stage__media[data-visible-count='3'] {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    padding-bottom: 0.75rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-color: #789075 #16221b;
+  }
+
+  #case-panel-04 [data-stage-id='modelling'] .workflow-stage__media > .workflow-media,
+  #case-panel-06 [data-stage-id='design-assembly'] .workflow-stage__media > .workflow-media {
+    flex: 0 0 clamp(16rem, 42vw, 22rem);
+    min-height: clamp(16rem, 42vw, 22rem);
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 48rem) {
+  #case-panel-04 [data-stage-id='modelling'] .workflow-stage__media > .workflow-media,
+  #case-panel-06 [data-stage-id='design-assembly'] .workflow-stage__media > .workflow-media {
+    flex-basis: min(76vw, 22rem);
+    min-height: min(76vw, 22rem);
+  }
+}
+
+/* Case 07: one visual step from the earlier fitting to the digital workflow. */
+#case-panel-07 [data-stage-id='workflow-transition'] .workflow-stage__media {
+  position: relative;
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  column-gap: clamp(7rem, 12vw, 12rem);
+}
+
+.workflow-stage__transition {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: clamp(6.5rem, 11vw, 11rem);
+  gap: 0.45rem;
+  justify-items: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.workflow-stage__transition span {
+  color: #dce9de;
+  font-family: var(--font-mono);
+  font-size: clamp(0.55rem, 0.65vw, 0.7rem);
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.workflow-stage__transition i {
+  width: 100%;
+  height: 1.25rem;
+  background: linear-gradient(90deg, #d05853 2%, #e6a35b 47%, #88bd78 100%);
+  clip-path: polygon(0 35%, 78% 35%, 78% 0, 100% 50%, 78% 100%, 78% 65%, 0 65%);
+  filter: drop-shadow(0 0 0.3rem rgb(221 183 109 / 0.25));
+}
+
+#case-panel-07 [data-stage-id='workflow-transition'] .workflow-media:first-of-type {
+  border: 2px solid #c95d59;
+  box-shadow: 0 0 0 1px rgb(201 93 89 / 0.2);
+}
+
+#case-panel-07 [data-stage-id='workflow-transition'] .workflow-media:last-of-type {
+  border-color: #749d6b;
+}
+
+.workflow-media[data-media-warning='true'] .workflow-media__index {
+  right: 2.65rem;
+}
+
+.workflow-media__warning {
+  position: absolute;
+  z-index: 5;
+  top: 0.4rem;
+  right: 0.45rem;
+  display: grid;
+  width: 1.6rem;
+  height: 1.6rem;
+  place-items: center;
+  border: 1.5px solid #ffb7a9;
+  border-radius: 50%;
+  background: #832d2b;
+  color: #fff2ee;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.workflow-media__warning-tip {
+  position: absolute;
+  z-index: 5;
+  top: 2.35rem;
+  right: 0.45rem;
+  width: min(23rem, calc(100% - 0.9rem));
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #db7770;
+  background: #2a1518f2;
+  color: #fff1ec;
+  font-family: var(--font-body);
+  font-size: clamp(0.68rem, 0.7vw, 0.78rem);
+  line-height: 1.4;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(-0.2rem);
+  transition: opacity var(--duration-fast), transform var(--duration-fast);
+  pointer-events: none;
+}
+
+.workflow-media__warning:hover + .workflow-media__warning-tip,
+.workflow-media:focus-visible .workflow-media__warning-tip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 48rem) {
+  #case-panel-07 [data-stage-id='workflow-transition'] .workflow-stage__media[data-visible-count='2'] {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 5rem;
+  }
+
+  #case-panel-07 [data-stage-id='workflow-transition'] .workflow-stage__media > .workflow-media {
+    grid-column: 1 / -1;
+    min-height: clamp(15rem, 60vw, 22rem);
+  }
+
+  #case-panel-07 .workflow-stage__transition {
+    width: min(12rem, 70vw);
+  }
+
+  #case-panel-07 .workflow-stage__transition i {
+    width: 3.5rem;
+    transform: rotate(90deg);
   }
 }

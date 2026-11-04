@@ -35,7 +35,7 @@ const source = media.type === 'image'
   : media.type === 'youtube'
     ? `https://www.youtube-nocookie.com/embed/${media.youtubeId}?autoplay=1&rel=0`
     : media.type === 'model3d'
-      ? media.embedUrl
+      ? (/^https?:\/\//i.test(media.embedUrl) ? media.embedUrl : withBase(media.embedUrl))
       : withBase(media.src);
 ---
 
@@ -96,6 +96,7 @@ const source = media.type === 'image'
     data-media-src={source}
     data-media-caption={media.caption}
     data-media-alt={mediaAlt}
+    data-media-warning={media.type === 'youtube' && media.warning ? 'true' : undefined}
     data-media-role={role}
     data-media-aspect={aspect}
     data-media-fit={objectFit}
@@ -104,12 +105,18 @@ const source = media.type === 'image'
     data-tile-span={tileSpan}
     data-has-aspect-ratio={aspectRatio ? 'true' : 'false'}
     style={`--media-position: ${objectPosition}; --media-scale: ${scale};${aspectRatio ? ` --media-aspect-ratio: ${aspectRatio};` : ''}`}
-    aria-label={`Open ${kindLabel.toLowerCase()} ${index}: ${media.caption}`}
+    aria-label={`Open ${kindLabel.toLowerCase()} ${index}: ${media.caption}${media.type === 'youtube' && media.warning ? `. Context: ${media.warning}` : ''}`}
   >
     <img src={withBase(poster)} alt={mediaAlt} width={intrinsicSize.width} height={intrinsicSize.height} loading="lazy" decoding="async" />
     <span class="workflow-media__shade" aria-hidden="true"></span>
     <span class="workflow-media__type">{kindLabel}</span>
     <span class="workflow-media__index" aria-hidden="true">{String(index).padStart(2, '0')}</span>
+    {media.type === 'youtube' && media.warning && (
+      <>
+        <span class="workflow-media__warning" aria-hidden="true" title={media.warning}>!</span>
+        <span class="workflow-media__warning-tip" aria-hidden="true">{media.warning}</span>
+      </>
+    )}
     {(media.type === 'youtube' || media.type === 'localVideo') && <span class="workflow-media__play" aria-hidden="true">▶</span>}
     <span class="workflow-media__caption">{media.caption}</span>
     <span class="workflow-media__action" aria-hidden="true">{media.type === 'image' ? 'Enlarge' : 'Open'} ↗</span>

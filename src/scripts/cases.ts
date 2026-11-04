@@ -336,6 +336,7 @@ if (caseRoot) {
     const caption = trigger.dataset.mediaCaption ?? 'Case evidence';
     const alt = trigger.dataset.mediaAlt ?? '';
     const mediaGroup = trigger.dataset.mediaGroup;
+    dialog.dataset.gallery = mediaGroup ?? '';
     if (mediaGroup) {
       dialogGalleryItems = [...caseRoot.querySelectorAll<HTMLButtonElement>(`[data-media-group="${CSS.escape(mediaGroup)}"]`)];
       dialogGalleryIndex = Math.max(0, dialogGalleryItems.indexOf(trigger));

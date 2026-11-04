@@ -37,17 +37,25 @@ const stages = [
       </div>
       <span class:list={['status-badge', `status-badge--${data.status.toLowerCase()}`]}>{data.status}</span>
     </header>
-    {data.placeholder && <p class="placeholder-notice"><strong>Editorial checkpoint</strong> — replace bracketed claims with test evidence.</p>}
-    <ol class="research-project__stages">
-      {stages.map(([label, copy], index) => (
-        <li>
-          <span>{String(index + 1).padStart(2, '0')}</span>
-          <h4>{label}</h4>
-          <p>{copy}</p>
-        </li>
-      ))}
-    </ol>
-    <TagList tags={data.tags} label="Development project tags" />
+    {data.description?.length ? (
+      <div class="research-project__description">
+        {data.description.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    ) : (
+      <>
+        {data.placeholder && <p class="placeholder-notice"><strong>Editorial checkpoint</strong> — replace bracketed claims with test evidence.</p>}
+        <ol class="research-project__stages">
+          {stages.map(([label, copy], index) => (
+            <li>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h4>{label}</h4>
+              <p>{copy}</p>
+            </li>
+          ))}
+        </ol>
+        <TagList tags={data.tags} label="Development project tags" />
+      </>
+    )}
   </div>
 </article>
 
@@ -72,6 +80,18 @@ const stages = [
     font-weight: 700;
     line-height: 1.5;
     letter-spacing: 0.1em;
+  }
+
+  .research-project__description {
+    max-width: 92ch;
+    margin-top: clamp(1.5rem, 2.5vw, 2.5rem);
+    color: #d6ded9;
+    font-size: clamp(1rem, 1.1vw, 1.16rem);
+    line-height: 1.7;
+  }
+
+  .research-project__description p + p {
+    margin-top: 1.15em;
   }
 
   @media (max-width: 60rem) {
